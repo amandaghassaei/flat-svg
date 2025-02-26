@@ -1,0 +1,76 @@
+{
+  "name": "@amandaghassaei/flat-svg",
+  "version": "1.0.0",
+  "description": "A TypeScript library for converting nested SVGs into a flat list of elements, paths, or segments and applying style-based filters.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "keywords": [
+    "svg",
+    "flatten",
+    "flattener",
+    "ungroup",
+    "path",
+    "shape",
+    "transform",
+    "style",
+    "parse",
+    "element",
+    "split",
+    "segment",
+    "filter"
+  ],
+  "scripts": {
+    "build": "rollup --config && tsc && npm run docs && npm run make-coverage-badge",
+    "test": "mocha 'test/**/*.ts'",
+    "test-with-coverage": "c8 mocha 'test/**/*.ts'",
+    "make-coverage-badge": "c8 --reporter=json-summary mocha 'test/**/*.ts' && coverage-badge-creator",
+    "docs": "typedoc --options ./typedoc.json",
+    "serve": "http-server -p 8080 -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amandaghassaei/flat-svg.git"
+  },
+  "author": "Amanda Ghassaei",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amandaghassaei/flat-svg/issues"
+  },
+  "homepage": "https://apps.amandaghassaei.com/flat-svg/demo/",
+  "dependencies": {
+    "@adobe/css-tools": "^4.3.0-rc.1",
+    "@amandaghassaei/type-checks": "^1.1.1",
+    "colord": "^2.9.3",
+    "svg-parser": "^2.0.4",
+    "svgpath": "^2.6.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
+    "@rollup/plugin-typescript": "^9.0.2",
+    "@types/chai": "^4.3.4",
+    "@types/css": "0.0.33",
+    "@types/mocha": "^10.0.1",
+    "@types/svg-parser": "^2.0.3",
+    "c8": "^8.0.0",
+    "chai": "^4.3.6",
+    "coverage-badge-creator": "^1.0.17",
+    "http-server": "^14.1.1",
+    "mocha": "^9.2.2",
+    "rollup": "^2.70.2",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-dts": "^4.2.3",
+    "rollup-plugin-polyfill-node": "^0.11.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.4.1",
+    "tsx": "^4.19.3",
+    "typedoc": "^0.23.14",
+    "typedoc-plugin-markdown": "^3.13.6",
+    "typescript": "^4.6.4"
+  },
+  "files": [
+    "dist",
+    "src"
+  ]
+}

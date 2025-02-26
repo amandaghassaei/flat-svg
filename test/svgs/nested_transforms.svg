@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 792">
+	<defs>
+		<style>.b{fill:#696a6c;}.b,.c{stroke:#231f20;stroke-miterlimit:10;stroke-width:5px;}.d,.c{opacity:.5;}.c{fill:#696a6d;}</style>
+	</defs>
+	<g class="d" transform='translate(356, 200)'>
+		<g class="d">
+			<g class="d" transform='matrix(0.7461 -0.6658 0.6658 0.7461 -33.7182 94.3933)'>
+				<rect class="c" x="39.74" y="38.39" width="129.87" height="67.53"/>
+				<rect class="b" x="39.74" y="133.19" width="129.87" height="67.53"/>
+			</g>
+			<rect class="b" x="39.74" y="228" width="129.87" height="67.53"/>
+		</g>
+		<rect class="b" x="39.74" y="322.81" width="129.87" height="67.53"/>
+	</g>
+</svg>

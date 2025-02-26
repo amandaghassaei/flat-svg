@@ -1,0 +1,137 @@
+body, html {
+	margin: 0;
+	padding: 0;
+	background: rgb(240, 240, 240);
+	font-family: "Lato","Helvetica Neue",Arial,sans-serif;
+	font-size: 11pt;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: row;
+}
+
+hr {
+	border-width: 0.5px;
+}
+
+svg {
+	background-color: white;
+}
+
+pre {
+    font-size: 10pt;
+}
+
+#menu {
+	width: 300px;
+	height: 100%;
+	flex: none;
+	background: rgb(240, 240, 240);
+	border-right: solid 1px #adadad;
+	overflow-y: auto;
+}
+.panel {
+	padding: 5px 20px;
+}
+
+.panel>div, .panel>button, .panel>#filterSettings>div {
+	margin-top: 10px;
+}
+.panel span {
+	font-weight: 900;
+}
+.panel h3 {
+	margin: 0;
+}
+
+#containerWrapper {
+	flex: auto;
+	overflow: auto;
+	padding: 30px 40px 40px 40px;
+}
+#containerWrapper>div {
+	margin: auto;
+}
+
+#input {
+	display: none;
+}
+
+#errorsAndWarnings {
+	margin-bottom: 20px;
+}
+
+.error {
+	background-color: #ff9a9a;
+}
+.warning {
+	background-color: palegoldenrod;
+}
+
+.error, .warning {
+	padding: 2px 5px;
+	margin: 2px;
+}
+
+#invalidFilter {
+	margin: 0px;
+    padding: 0px 5px;
+}
+
+#elementsHover {
+	position: absolute;
+	display: none;
+	background: rgba(240, 240, 240, 0.9);
+	padding: 20px;
+	max-width: 300px;
+	z-index: 2;
+	overflow-wrap: break-word;
+	word-break: break-all;
+}
+
+#preserveArcs {
+	margin-bottom: 10px;
+}
+
+.checkered{
+    background: -webkit-linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), -webkit-linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), white;
+    background: -moz-linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), -moz-linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), white;
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), white;
+    background-repeat: repeat, repeat;
+    background-position: 0px 0, 5px 5px;
+    -webkit-transform-origin: 0 0 0;
+    transform-origin: 0 0 0;
+    -webkit-background-origin: padding-box, padding-box;
+    background-origin: padding-box, padding-box;
+    -webkit-background-clip: border-box, border-box;
+    background-clip: border-box, border-box;
+    -webkit-background-size: 10px 10px, 10px 10px;
+    background-size: 10px 10px, 10px 10px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    text-shadow: none;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    transition: none;
+    -webkit-transform: scaleX(1) scaleY(1) scaleZ(1);
+    transform: scaleX(1) scaleY(1) scaleZ(1);
+}
+
+#viewboxContainer {
+	background: rgb(240, 240, 240);
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #dedede;
+}
+
+button {
+	background: white;
+    border: solid 1px;
+    border-radius: 3px;
+    padding: 3px 10px;
+}

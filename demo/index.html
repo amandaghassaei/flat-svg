@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <title>@amandaghassaei/flat-svg demo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" type="text/css" href="./index.css" />
+        <script src="../bundle/flat-svg.min.js"></script>
+        <script src="./FileSaver.min.js"></script>
+    </head>
+    <body>
+        <input type="file" id="input" />
+        <div id="elementsHover"></div>
+        <div id="menu">
+            <br />
+            <div class="panel">
+                <h3>
+                    <a href="https://github.com/amandaghassaei/flat-svg"
+                        >@amandaghassaei/flat-svg</a
+                    >
+                </h3>
+                <br />A JavaScript library for converting nested SVGs into a flat list of elements,
+                paths, or segments
+                <pre>npm i @amandaghassaei/flat-svg</pre>
+            </div>
+            <hr />
+            <div class="panel" id="importSettings">
+                <h3>Import</h3>
+                <div>Drag / Paste / <a href="#" id="upload">Upload</a> an SVG into this window</div>
+            </div>
+            <hr />
+            <div class="panel">
+                <h3>SVG</h3>
+                <div id="defs">Num &lt;defs&gt; tags: <span id="numDefs"></span></div>
+                <div>Elements: <span id="numElements"></span></div>
+                <div>Paths: <span id="numPaths"></span></div>
+                <div>Segments: <span id="numSegments"></span></div>
+                <div id="errorsAndWarnings"></div>
+                <br />
+                <div>
+                    Preserve Arcs:
+                    <select id="preserveArcs">
+                        <option value="false">False</option>
+                        <option value="true">True</option>
+                    </select>
+                </div>
+                <div>
+                    View As:
+                    <select id="viewType">
+                        <option value="svg">Input SVG (not flat)</option>
+                        <option value="elements">Elements</option>
+                        <option value="paths">Paths</option>
+                        <option value="segments">Segments</option>
+                    </select>
+                </div>
+            </div>
+            <hr />
+            <div class="panel">
+                <h3>Filter</h3>
+                <div id="filterToggle">
+                    <input type="checkbox" name="applyFilter" id="applyFilter" />
+                    <label for="applyFilter">Apply Filter</label>
+                    <div class="error" id="invalidFilter">Invalid Filter Settings!</div>
+                </div>
+                <div id="filterSettings">
+                    <div>Filter Attribute: <input value="stroke" id="filterAttribute" /></div>
+                    <div>Filter Value: <input value="red" id="filterValue" /></div>
+                    <div>
+                        Filter Tolerance:
+                        <input
+                            value="0.1"
+                            id="filterTolerance"
+                            type="number"
+                            max="1"
+                            min="0"
+                            step="0.01"
+                        />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="panel">
+                <h3>Save</h3>
+                <div>Filename: <input value="demo" id="exportFilename" /></div>
+                <button href="#" id="save">Save Current SVG</button>
+            </div>
+            <br />
+        </div>
+        <div class="checkered" id="containerWrapper">
+            <div>
+                <div id="viewboxContainer">View Box: <span id="viewBox"></span></div>
+                <div id="container"></div>
+            </div>
+        </div>
+    </body>
+    <script src="./index.js"></script>
+</html>
