@@ -176,10 +176,7 @@ This work is distributed under an [MIT license](https://github.com/amandaghassae
 -   [svg-parser](https://www.npmjs.com/package/svg-parser) (MIT License)
 -   [svgpath](https://www.npmjs.com/package/svgpath) (MIT License)
 -   [colord](https://www.npmjs.com/package/colord) (MIT license)
--   [css](https://www.npmjs.com/package/css) (MIT license)
-    -   [inherits](https://www.npmjs.com/package/inherits) (ISC license)
-    -   [source-map](https://www.npmjs.com/package/source-map) (BSD-3-Clause)
-    -   [source-map-resolve](https://www.npmjs.com/package/source-map-resolve) (MIT license)
+-   [@adobe/css-tools](https://www.npmjs.com/package/@adobe/css-tools) (MIT license)
 -   [@amandaghassaei/type-checks](https://github.com/amandaghassaei/type-checks) (MIT license)
 -   Additionally, some code was borrowed from [svg-flatten](https://www.npmjs.com/package/svg-flatten), which is distributed under an [ISC license](https://github.com/stadline/svg-flatten/blob/master/LICENSE).
 
