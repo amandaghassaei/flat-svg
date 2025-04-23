@@ -1,6 +1,6 @@
 {
   "name": "@amandaghassaei/flat-svg",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A TypeScript library for converting nested SVGs into a flat list of elements, paths, or segments and applying style-based filters.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
