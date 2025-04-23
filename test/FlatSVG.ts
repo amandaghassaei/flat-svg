@@ -14,6 +14,7 @@ const clipping_mask = readFileSync('./test/svgs/clipping_mask.svg', {encoding: '
 const internal_css = readFileSync('./test/svgs/internal_css.svg', {encoding: 'utf-8'});
 const internal_css_w_ids = readFileSync('./test/svgs/internal_css_w_ids.svg', {encoding: 'utf-8'});
 const with_units = readFileSync('./test/svgs/with_units.svg', {encoding: 'utf-8'});
+const with_ambiguous_units = readFileSync('./test/svgs/with_ambiguous_units.svg', {encoding: 'utf-8'});
 const ellipses = readFileSync('./test/svgs/ellipses.svg', {encoding: 'utf-8'});
 const bad_tags = readFileSync('./test/svgs/bad_tags.svg', {encoding: 'utf-8'});
 const nested_transforms = readFileSync('./test/svgs/nested_transforms.svg', {encoding: 'utf-8'});
@@ -82,8 +83,9 @@ describe('FlatSVG', () => {
 			expect((new FlatSVG(with_units)).units).to.equal('cm');
 		});
 
-		it('should return "px" if no units is defines', () => {
+		it('should return "px" if no units is defined', () => {
 			expect((new FlatSVG(miura)).units).to.equal("px");
+            expect((new FlatSVG(with_ambiguous_units)).units).to.equal("px");
 		});
 	});
 

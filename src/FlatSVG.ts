@@ -261,6 +261,15 @@ export class FlatSVG {
         // If you do not specify any units inside the width and height attributes, the units are assumed to be pixels.
         const regex = new RegExp(/(em|ex|px|pt|pc|cm|mm|in)$/);
         const { x, y, width, height } = this.root.properties || /* c8 ignore next */ {};
+        if (isNumber(x) || isNumber(y) || isNumber(width) || isNumber(height)) {
+            // No units specified.
+            return 'px';
+        }
+        if ((width && typeof width !== 'string') || (height && typeof height !== 'string')) {
+            // Should not hit this.
+            console.warn(`Encountered poorly formed SVG width and/or height: ${width}, ${height}.`);
+            return 'px';
+        }
         /* c8 ignore next 2 */
         const match =
             x?.match(regex) || y?.match(regex) || width?.match(regex) || height?.match(regex);
