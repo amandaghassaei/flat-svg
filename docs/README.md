@@ -1,27 +1,27 @@
-@amandaghassaei/flat-svg
+**@amandaghassaei/flat-svg**
+
+***
 
 # @amandaghassaei/flat-svg
 
-## Table of contents
-
-### Classes
+## Classes
 
 - [FlatSVG](classes/FlatSVG.md)
 
-### Interfaces
+## Interfaces
 
-- [Transform](interfaces/Transform.md)
-- [Style](interfaces/Style.md)
-- [BaseProperties](interfaces/BaseProperties.md)
-- [LineProperties](interfaces/LineProperties.md)
-- [RectProperties](interfaces/RectProperties.md)
-- [PolylineProperties](interfaces/PolylineProperties.md)
-- [PolygonProperties](interfaces/PolygonProperties.md)
-- [CircleProperties](interfaces/CircleProperties.md)
-- [EllipseProperties](interfaces/EllipseProperties.md)
-- [PathProperties](interfaces/PathProperties.md)
-- [SegmentProperties](interfaces/SegmentProperties.md)
-- [Properties](interfaces/Properties.md)
+- [FlatSVGColorHistogram](interfaces/FlatSVGColorHistogram.md)
+- [FlatSVGTransform](interfaces/FlatSVGTransform.md)
+- [FlatSVGStyle](interfaces/FlatSVGStyle.md)
+- [SVGBaseProperties](interfaces/SVGBaseProperties.md)
+- [SVGLineProperties](interfaces/SVGLineProperties.md)
+- [SVGRectProperties](interfaces/SVGRectProperties.md)
+- [SVGPolylineProperties](interfaces/SVGPolylineProperties.md)
+- [SVGPolygonProperties](interfaces/SVGPolygonProperties.md)
+- [SVGCircleProperties](interfaces/SVGCircleProperties.md)
+- [SVGEllipseProperties](interfaces/SVGEllipseProperties.md)
+- [SVGPathProperties](interfaces/SVGPathProperties.md)
+- [SVGElementProperties](interfaces/SVGElementProperties.md)
 - [FlatElementBase](interfaces/FlatElementBase.md)
 - [FlatLineElement](interfaces/FlatLineElement.md)
 - [FlatRectElement](interfaces/FlatRectElement.md)
@@ -30,124 +30,38 @@
 - [FlatCircleElement](interfaces/FlatCircleElement.md)
 - [FlatEllipseElement](interfaces/FlatEllipseElement.md)
 - [FlatPathElement](interfaces/FlatPathElement.md)
-
-### Type Aliases
-
-- [ElementNode](README.md#elementnode)
-- [Node](README.md#node)
-- [FlatElement](README.md#flatelement)
-- [FlatPath](README.md#flatpath)
-- [FlatLineSegment](README.md#flatlinesegment)
-- [FlatBezierSegment](README.md#flatbeziersegment)
-- [FlatArcSegment](README.md#flatarcsegment)
-- [FlatSegment](README.md#flatsegment)
-- [PropertiesFilter](README.md#propertiesfilter)
+- [FlatUnsupportedElement](interfaces/FlatUnsupportedElement.md)
+- [FlatSVGStrayVertex](interfaces/FlatSVGStrayVertex.md)
+- [FlatSVGDef](interfaces/FlatSVGDef.md)
+- [FlatSVGAnalysis](interfaces/FlatSVGAnalysis.md)
 
 ## Type Aliases
 
-### ElementNode
+- [FlatSVGUnit](type-aliases/FlatSVGUnit.md)
+- [FlatSVGPoint](type-aliases/FlatSVGPoint.md)
+- [SVGParserElementNode](type-aliases/SVGParserElementNode.md)
+- [SVGParserNode](type-aliases/SVGParserNode.md)
+- [FlatElement](type-aliases/FlatElement.md)
+- [FlatPath](type-aliases/FlatPath.md)
+- [FlatLineSegment](type-aliases/FlatLineSegment.md)
+- [FlatBezierSegment](type-aliases/FlatBezierSegment.md)
+- [FlatArcSegment](type-aliases/FlatArcSegment.md)
+- [FlatSegment](type-aliases/FlatSegment.md)
+- [FlatSVGStyleFilter](type-aliases/FlatSVGStyleFilter.md)
+- [FlatSVGStrayVertexCause](type-aliases/FlatSVGStrayVertexCause.md)
 
-Ƭ **ElementNode**: `Object`
+## Variables
 
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `type` | ``"element"`` |
-| `tagName?` | `string` |
-| `properties?` | [`Properties`](interfaces/Properties.md) |
-| `children` | [`Node`](README.md#node)[] |
-| `value?` | `string` |
-| `metadata?` | `string` |
-
-___
-
-### Node
-
-Ƭ **Node**: `TextNode` \| [`ElementNode`](README.md#elementnode)
-
-___
-
-### FlatElement
-
-Ƭ **FlatElement**: [`FlatLineElement`](interfaces/FlatLineElement.md) \| [`FlatRectElement`](interfaces/FlatRectElement.md) \| [`FlatPolylineElement`](interfaces/FlatPolylineElement.md) \| [`FlatPolygonElement`](interfaces/FlatPolygonElement.md) \| [`FlatCircleElement`](interfaces/FlatCircleElement.md) \| [`FlatEllipseElement`](interfaces/FlatEllipseElement.md) \| [`FlatPathElement`](interfaces/FlatPathElement.md)
-
-___
-
-### FlatPath
-
-Ƭ **FlatPath**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `properties` | [`PathProperties`](interfaces/PathProperties.md) |
-
-___
-
-### FlatLineSegment
-
-Ƭ **FlatLineSegment**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `p1` | [`number`, `number`] |
-| `p2` | [`number`, `number`] |
-| `properties` | [`SegmentProperties`](interfaces/SegmentProperties.md) |
-
-___
-
-### FlatBezierSegment
-
-Ƭ **FlatBezierSegment**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `p1` | [`number`, `number`] |
-| `p2` | [`number`, `number`] |
-| `controlPoints` | [`number`, `number`][] |
-| `properties` | [`SegmentProperties`](interfaces/SegmentProperties.md) |
-
-___
-
-### FlatArcSegment
-
-Ƭ **FlatArcSegment**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `p1` | [`number`, `number`] |
-| `p2` | [`number`, `number`] |
-| `rx` | `number` |
-| `ry` | `number` |
-| `xAxisRotation` | `number` |
-| `largeArcFlag` | `boolean` |
-| `sweepFlag` | `boolean` |
-| `properties` | [`SegmentProperties`](interfaces/SegmentProperties.md) |
-
-___
-
-### FlatSegment
-
-Ƭ **FlatSegment**: [`FlatLineSegment`](README.md#flatlinesegment) \| [`FlatBezierSegment`](README.md#flatbeziersegment) \| [`FlatArcSegment`](README.md#flatarcsegment)
-
-___
-
-### PropertiesFilter
-
-Ƭ **PropertiesFilter**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `key` | `string` |
-| `value` | `string` \| `number` \| `number`[] \| `Colord` |
-| `tolerance?` | `number` |
+- [SVG\_LINE](variables/SVG_LINE.md)
+- [SVG\_RECT](variables/SVG_RECT.md)
+- [SVG\_POLYGON](variables/SVG_POLYGON.md)
+- [SVG\_POLYLINE](variables/SVG_POLYLINE.md)
+- [SVG\_PATH](variables/SVG_PATH.md)
+- [SVG\_CIRCLE](variables/SVG_CIRCLE.md)
+- [SVG\_ELLIPSE](variables/SVG_ELLIPSE.md)
+- [FLAT\_SVG\_STRAY\_VERTEX\_MOVETO\_ONLY](variables/FLAT_SVG_STRAY_VERTEX_MOVETO_ONLY.md)
+- [FLAT\_SVG\_STRAY\_VERTEX\_POLYLINE\_SINGLE\_POINT](variables/FLAT_SVG_STRAY_VERTEX_POLYLINE_SINGLE_POINT.md)
+- [FLAT\_SVG\_STRAY\_VERTEX\_POLYGON\_SINGLE\_POINT](variables/FLAT_SVG_STRAY_VERTEX_POLYGON_SINGLE_POINT.md)
+- [FLAT\_SEGMENT\_LINE](variables/FLAT_SEGMENT_LINE.md)
+- [FLAT\_SEGMENT\_BEZIER](variables/FLAT_SEGMENT_BEZIER.md)
+- [FLAT\_SEGMENT\_ARC](variables/FLAT_SEGMENT_ARC.md)

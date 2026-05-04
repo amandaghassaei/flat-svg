@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"noImplicitAny": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"module": "esnext",
 		"target": "es6",
 		"allowJs": false,
@@ -11,14 +11,17 @@
 		"declaration": true,
 		"typeRoots": ["node_modules/@types"],
 		"allowSyntheticDefaultImports": true,
+		"noEmit": true,
+		"skipLibCheck": true,
 	},
 	"include": [
-		"src"
+		"src",
+		"test"
 	],
 	"ts-node": {
 		"compilerOptions": {
 			"module": "esnext",
-			"moduleResolution": "node",
+			"moduleResolution": "bundler",
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { SVG_STYLE_FILL, SVG_STYLE_OPACITY, SVG_STYLE_STROKE_COLOR, SVG_STYLE_STROKE_WIDTH, LINE, RECT, POLYLINE, POLYGON, CIRCLE, ELLIPSE, PATH, SVG_STYLE_COLOR, SVG_STYLE_STROKE_DASH_ARRAY } from './constants';
+import { SVG_STYLE_FILL, SVG_STYLE_FILL_OPACITY, SVG_STYLE_OPACITY, SVG_STYLE_STROKE_COLOR, SVG_STYLE_STROKE_OPACITY, SVG_STYLE_STROKE_WIDTH, LINE, RECT, POLYLINE, POLYGON, CIRCLE, ELLIPSE, PATH, SVG_STYLE_COLOR, SVG_STYLE_STROKE_DASH_ARRAY, FLAT_SVG_STRAY_VERTEX_MOVETO_ONLY, FLAT_SVG_STRAY_VERTEX_POLYLINE_SINGLE_POINT, FLAT_SVG_STRAY_VERTEX_POLYGON_SINGLE_POINT } from './constants';
 import { TextNode } from 'svg-parser';
 import { Colord } from 'colord';
 export interface Transform {
@@ -19,7 +19,9 @@ export interface TransformParsed extends Transform {
 export interface Style {
     [SVG_STYLE_STROKE_WIDTH]?: number;
     [SVG_STYLE_STROKE_COLOR]?: string;
+    [SVG_STYLE_STROKE_OPACITY]?: number;
     [SVG_STYLE_FILL]?: string;
+    [SVG_STYLE_FILL_OPACITY]?: number;
     [SVG_STYLE_OPACITY]?: number;
     [SVG_STYLE_COLOR]?: string;
     [SVG_STYLE_STROKE_DASH_ARRAY]?: number | string;
@@ -73,11 +75,11 @@ export interface PathProperties extends BaseProperties {
 /**
  * @private
  */
-export declare type GeometryElementTagName = typeof LINE | typeof RECT | typeof POLYLINE | typeof POLYGON | typeof CIRCLE | typeof ELLIPSE | typeof PATH;
+export type GeometryElementTagName = typeof LINE | typeof RECT | typeof POLYLINE | typeof POLYGON | typeof CIRCLE | typeof ELLIPSE | typeof PATH;
 /**
  * @private
  */
-export declare type GeometryElementProperties = LineProperties | RectProperties | PolylineProperties | PolygonProperties | CircleProperties | EllipseProperties | PathProperties;
+export type GeometryElementProperties = LineProperties | RectProperties | PolylineProperties | PolygonProperties | CircleProperties | EllipseProperties | PathProperties;
 export interface SegmentProperties extends BaseProperties {
 }
 export interface Properties extends Style {
@@ -101,7 +103,7 @@ export interface Properties extends Style {
     r?: number;
     transform?: string;
 }
-export declare type ElementNode = {
+export type ElementNode = {
     type: 'element';
     tagName?: string | undefined;
     properties?: Properties;
@@ -109,7 +111,7 @@ export declare type ElementNode = {
     value?: string | undefined;
     metadata?: string | undefined;
 };
-export declare type Node = TextNode | ElementNode;
+export type Node = TextNode | ElementNode;
 export interface FlatElementBase {
     transform?: Transform;
 }
@@ -141,22 +143,22 @@ export interface FlatPathElement extends FlatElementBase {
     tagName: typeof PATH;
     properties: PathProperties;
 }
-export declare type FlatElement = FlatLineElement | FlatRectElement | FlatPolylineElement | FlatPolygonElement | FlatCircleElement | FlatEllipseElement | FlatPathElement;
-export declare type FlatPath = {
+export type FlatElement = FlatLineElement | FlatRectElement | FlatPolylineElement | FlatPolygonElement | FlatCircleElement | FlatEllipseElement | FlatPathElement;
+export type FlatPath = {
     properties: PathProperties;
 };
-export declare type FlatLineSegment = {
+export type FlatLineSegment = {
     p1: [number, number];
     p2: [number, number];
     properties: SegmentProperties;
 };
-export declare type FlatBezierSegment = {
+export type FlatBezierSegment = {
     p1: [number, number];
     p2: [number, number];
     controlPoints: [number, number][];
     properties: SegmentProperties;
 };
-export declare type FlatArcSegment = {
+export type FlatArcSegment = {
     p1: [number, number];
     p2: [number, number];
     rx: number;
@@ -166,36 +168,92 @@ export declare type FlatArcSegment = {
     sweepFlag: boolean;
     properties: SegmentProperties;
 };
-export declare type FlatSegment = FlatLineSegment | FlatBezierSegment | FlatArcSegment;
-export declare type PropertiesFilter = {
+export type FlatSegment = FlatLineSegment | FlatBezierSegment | FlatArcSegment;
+export type PropertiesFilter = {
     key: string;
     value: string | number | number[] | Colord;
     tolerance?: number;
 };
-declare type MoveToAbs = ["M", number, number];
-declare type LineToAbs = ["L", number, number];
-declare type HorizontalLineToAbs = ["H", number];
-declare type VerticalLineToAbs = ["V", number];
-declare type CurveToAbs = ["C", number, number, number, number, number, number];
-declare type SmoothCurveToAbs = ["S", number, number, number, number];
-declare type QuadraticBézierCurveToAbs = ["Q", number, number, number, number];
-declare type SmoothQuadraticBézierCurveToAbs = ["T", number, number];
-declare type EllipticalArcAbs = ["A", number, number, number, number, number, number, number];
-declare type MoveToRel = ["m", number, number];
-declare type LineToRel = ["l", number, number];
-declare type HorizontalLineToRel = ["h", number];
-declare type VerticalLineToRel = ["v", number];
-declare type CurveToRel = ["c", number, number, number, number, number, number];
-declare type SmoothCurveToRel = ["s", number, number, number, number];
-declare type QuadraticBézierCurveToRel = ["q", number, number, number, number];
-declare type SmoothQuadraticBézierCurveToRel = ["t", number, number];
-declare type EllipticalArcRel = ["a", number, number, number, number, number, number, number];
-declare type ClosePath = ["Z" | "z"];
-declare type Segment = MoveToAbs | MoveToRel | LineToAbs | LineToRel | HorizontalLineToAbs | HorizontalLineToRel | VerticalLineToAbs | VerticalLineToRel | CurveToAbs | CurveToRel | SmoothCurveToAbs | SmoothCurveToRel | QuadraticBézierCurveToAbs | QuadraticBézierCurveToRel | SmoothQuadraticBézierCurveToAbs | SmoothQuadraticBézierCurveToRel | EllipticalArcAbs | EllipticalArcRel | ClosePath;
+/**
+ * Source of a stray vertex — which kind of degenerate SVG element produced it.
+ */
+export type FlatSVGStrayVertexSource = typeof FLAT_SVG_STRAY_VERTEX_MOVETO_ONLY | typeof FLAT_SVG_STRAY_VERTEX_POLYLINE_SINGLE_POINT | typeof FLAT_SVG_STRAY_VERTEX_POLYGON_SINGLE_POINT;
+/**
+ * An isolated point in the SVG that produced no geometry because its source
+ * element collapsed to a single point (e.g. circle with r=0, path with only
+ * moveto commands). Position is in viewBox coordinates.
+ */
+export interface FlatSVGStrayVertex {
+    position: {
+        x: number;
+        y: number;
+    };
+    source: FlatSVGStrayVertexSource;
+}
+/**
+ * An element that has a clip-path applied (from its own clip-path attribute
+ * or inherited from any ancestor).
+ */
+export interface FlatSVGClippedElement {
+    element: FlatElement;
+    clipPathId: string;
+}
+/**
+ * Aggregated diagnostic output from FlatSVG.analyze().
+ * All fields are JSON-serializable — no class instances.
+ */
+export interface FlatSVGAnalysis {
+    viewBox: number[];
+    units: string;
+    counts: {
+        elements: number;
+        paths: number;
+        segments: number;
+        invisible: number;
+        fillOnly: number;
+        clipped: number;
+        zeroLengthSegments: number;
+        strayVertices: number;
+        defs: number;
+    };
+    strokeColors: {
+        [color: string]: number;
+    };
+    fillColors: {
+        [color: string]: number;
+    };
+    invisibleElements: FlatElement[];
+    fillOnly: FlatElement[];
+    clipped: FlatSVGClippedElement[];
+    zeroLengthSegments: FlatSegment[];
+    strayVertices: FlatSVGStrayVertex[];
+    errors: string[];
+    warnings: string[];
+}
+type MoveToAbs = ["M", number, number];
+type LineToAbs = ["L", number, number];
+type HorizontalLineToAbs = ["H", number];
+type VerticalLineToAbs = ["V", number];
+type CurveToAbs = ["C", number, number, number, number, number, number];
+type SmoothCurveToAbs = ["S", number, number, number, number];
+type QuadraticBézierCurveToAbs = ["Q", number, number, number, number];
+type SmoothQuadraticBézierCurveToAbs = ["T", number, number];
+type EllipticalArcAbs = ["A", number, number, number, number, number, number, number];
+type MoveToRel = ["m", number, number];
+type LineToRel = ["l", number, number];
+type HorizontalLineToRel = ["h", number];
+type VerticalLineToRel = ["v", number];
+type CurveToRel = ["c", number, number, number, number, number, number];
+type SmoothCurveToRel = ["s", number, number, number, number];
+type QuadraticBézierCurveToRel = ["q", number, number, number, number];
+type SmoothQuadraticBézierCurveToRel = ["t", number, number];
+type EllipticalArcRel = ["a", number, number, number, number, number, number, number];
+type ClosePath = ["Z" | "z"];
+type Segment = MoveToAbs | MoveToRel | LineToAbs | LineToRel | HorizontalLineToAbs | HorizontalLineToRel | VerticalLineToAbs | VerticalLineToRel | CurveToAbs | CurveToRel | SmoothCurveToAbs | SmoothCurveToRel | QuadraticBézierCurveToAbs | QuadraticBézierCurveToRel | SmoothQuadraticBézierCurveToAbs | SmoothQuadraticBézierCurveToRel | EllipticalArcAbs | EllipticalArcRel | ClosePath;
 /**
  * @private
  */
-export declare type PathParser = {
+export type PathParser = {
     (path: string): PathParser;
     new (path: string): PathParser;
     from(path: string | PathParser): PathParser;

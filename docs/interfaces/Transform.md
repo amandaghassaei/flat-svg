@@ -1,50 +1,43 @@
+[**@amandaghassaei/flat-svg**](../README.md)
+
+***
+
 [@amandaghassaei/flat-svg](../README.md) / Transform
 
 # Interface: Transform
-
-## Table of contents
-
-### Properties
-
-- [a](Transform.md#a)
-- [b](Transform.md#b)
-- [c](Transform.md#c)
-- [d](Transform.md#d)
-- [e](Transform.md#e)
-- [f](Transform.md#f)
 
 ## Properties
 
 ### a
 
-• **a**: `number`
+> **a**: `number`
 
-___
+***
 
 ### b
 
-• **b**: `number`
+> **b**: `number`
 
-___
+***
 
 ### c
 
-• **c**: `number`
+> **c**: `number`
 
-___
+***
 
 ### d
 
-• **d**: `number`
+> **d**: `number`
 
-___
+***
 
 ### e
 
-• **e**: `number`
+> **e**: `number`
 
-___
+***
 
 ### f
 
-• **f**: `number`
+> **f**: `number`

@@ -1,117 +1,164 @@
+[**@amandaghassaei/flat-svg**](../README.md)
+
+***
+
 [@amandaghassaei/flat-svg](../README.md) / BaseProperties
 
 # Interface: BaseProperties
 
-## Hierarchy
+## Extends
 
 - [`Style`](Style.md)
 
-  ↳ **`BaseProperties`**
+## Extended by
 
-  ↳↳ [`LineProperties`](LineProperties.md)
-
-  ↳↳ [`RectProperties`](RectProperties.md)
-
-  ↳↳ [`PolylineProperties`](PolylineProperties.md)
-
-  ↳↳ [`PolygonProperties`](PolygonProperties.md)
-
-  ↳↳ [`CircleProperties`](CircleProperties.md)
-
-  ↳↳ [`EllipseProperties`](EllipseProperties.md)
-
-  ↳↳ [`PathProperties`](PathProperties.md)
-
-  ↳↳ [`SegmentProperties`](SegmentProperties.md)
-
-## Table of contents
-
-### Properties
-
-- [stroke-width](BaseProperties.md#stroke-width)
-- [stroke](BaseProperties.md#stroke)
-- [fill](BaseProperties.md#fill)
-- [opacity](BaseProperties.md#opacity)
-- [color](BaseProperties.md#color)
-- [stroke-dasharray](BaseProperties.md#stroke-dasharray)
-- [id](BaseProperties.md#id)
-- [class](BaseProperties.md#class)
-- [ids](BaseProperties.md#ids)
+- [`LineProperties`](LineProperties.md)
+- [`RectProperties`](RectProperties.md)
+- [`PolylineProperties`](PolylineProperties.md)
+- [`PolygonProperties`](PolygonProperties.md)
+- [`CircleProperties`](CircleProperties.md)
+- [`EllipseProperties`](EllipseProperties.md)
+- [`PathProperties`](PathProperties.md)
+- [`SegmentProperties`](SegmentProperties.md)
 
 ## Properties
 
-### stroke-width
+### stroke-width?
 
-• `Optional` **stroke-width**: `number`
-
-#### Inherited from
-
-[Style](Style.md).[stroke-width](Style.md#stroke-width)
-
-___
-
-### stroke
-
-• `Optional` **stroke**: `string`
+> `optional` **stroke-width?**: `number`
 
 #### Inherited from
 
-[Style](Style.md).[stroke](Style.md#stroke)
+[`Style`](Style.md).[`stroke-width`](Style.md#stroke-width)
 
-___
+***
 
-### fill
+### stroke?
 
-• `Optional` **fill**: `string`
-
-#### Inherited from
-
-[Style](Style.md).[fill](Style.md#fill)
-
-___
-
-### opacity
-
-• `Optional` **opacity**: `number`
+> `optional` **stroke?**: `string`
 
 #### Inherited from
 
-[Style](Style.md).[opacity](Style.md#opacity)
+[`Style`](Style.md).[`stroke`](Style.md#stroke)
 
-___
+***
 
-### color
+### stroke-opacity?
 
-• `Optional` **color**: `string`
-
-#### Inherited from
-
-[Style](Style.md).[color](Style.md#color)
-
-___
-
-### stroke-dasharray
-
-• `Optional` **stroke-dasharray**: `string` \| `number`
+> `optional` **stroke-opacity?**: `number`
 
 #### Inherited from
 
-[Style](Style.md).[stroke-dasharray](Style.md#stroke-dasharray)
+[`Style`](Style.md).[`stroke-opacity`](Style.md#stroke-opacity)
 
-___
+***
 
-### id
+### stroke-linecap?
 
-• `Optional` **id**: `string`
+> `optional` **stroke-linecap?**: `string`
 
-___
+#### Inherited from
 
-### class
+[`Style`](Style.md).[`stroke-linecap`](Style.md#stroke-linecap)
 
-• `Optional` **class**: `string`
+***
 
-___
+### stroke-linejoin?
 
-### ids
+> `optional` **stroke-linejoin?**: `string`
 
-• `Optional` **ids**: `string`
+#### Inherited from
+
+[`Style`](Style.md).[`stroke-linejoin`](Style.md#stroke-linejoin)
+
+***
+
+### stroke-miterlimit?
+
+> `optional` **stroke-miterlimit?**: `number`
+
+#### Inherited from
+
+[`Style`](Style.md).[`stroke-miterlimit`](Style.md#stroke-miterlimit)
+
+***
+
+### fill?
+
+> `optional` **fill?**: `string`
+
+#### Inherited from
+
+[`Style`](Style.md).[`fill`](Style.md#fill)
+
+***
+
+### fill-opacity?
+
+> `optional` **fill-opacity?**: `number`
+
+#### Inherited from
+
+[`Style`](Style.md).[`fill-opacity`](Style.md#fill-opacity)
+
+***
+
+### opacity?
+
+> `optional` **opacity?**: `number`
+
+#### Inherited from
+
+[`Style`](Style.md).[`opacity`](Style.md#opacity)
+
+***
+
+### color?
+
+> `optional` **color?**: `string`
+
+#### Inherited from
+
+[`Style`](Style.md).[`color`](Style.md#color)
+
+***
+
+### stroke-dasharray?
+
+> `optional` **stroke-dasharray?**: `string` \| `number`
+
+#### Inherited from
+
+[`Style`](Style.md).[`stroke-dasharray`](Style.md#stroke-dasharray)
+
+***
+
+### display?
+
+> `optional` **display?**: `string`
+
+#### Inherited from
+
+[`Style`](Style.md).[`display`](Style.md#display)
+
+***
+
+### visibility?
+
+> `optional` **visibility?**: `string`
+
+#### Inherited from
+
+[`Style`](Style.md).[`visibility`](Style.md#visibility)
+
+***
+
+### id?
+
+> `optional` **id?**: `string`
+
+***
+
+### class?
+
+> `optional` **class?**: `string`

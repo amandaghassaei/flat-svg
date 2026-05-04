@@ -1,11 +1,12 @@
 import { expect } from 'chai';
-import type { TransformParsed } from '../src/types';
+import type { TransformParsed } from '../src/types-private';
 import {
 	parseTransformString,
 	dotTransforms,
 	applyTransform,
 	initIdentityTransform,
 	flattenTransformArray,
+	copyTransform,
 	transformToString,
 } from '../src/transforms';
 
@@ -28,7 +29,6 @@ function expectTransformsRoughlyDeepEqual(a: TransformParsed, b: TransformParsed
     expect(a[key]).to.be.closeTo(b[key] as number, 1e-6);
   });
   expect(a.warnings).to.deep.equal(b.warnings);
-  expect(a.errors).to.deep.equal(b.errors);
 }
 
 function expectTransformArraysRoughlyDeepEqual(a: TransformParsed[], b: TransformParsed[]) {
@@ -68,7 +68,7 @@ describe('Transforms', () => {
       expect(parseTransformString('translate(0,0)')).to.deep.equal([IDENTITY]);
     });
 
-    it('should ignore null translation', () => {
+    it('warns about null/NaN/empty/missing parameters in translate', () => {
       expect(parseTransformString('translate()')).to.deep.equal([{ ...IDENTITY,  warnings: [
         'Found element with malformed transform: "translate()" containing 0 parameters, expected 1 or 2 parameters.'
       ]}]);
@@ -114,7 +114,7 @@ describe('Transforms', () => {
       ]}]);
     });
 
-    it('should ignore extra parameters in translation', () => {
+    it('warns about extra parameters and uses the first N valid for translate', () => {
       expect(parseTransformString('translate(-4.3,0.001,5.6)')).to.deep.equal([{ ...IDENTITY, e: -4.3, f: 0.001,  warnings: [
         'Found element with malformed transform: "translate(-4.3,0.001,5.6)" containing 3 parameters, expected 1 or 2 parameters.'
       ]}]);
@@ -139,7 +139,7 @@ describe('Transforms', () => {
       expect(parseTransformString('scale(1,1)')).to.deep.equal([IDENTITY]);
     });
 
-    it('should ignore null scale', () => {
+    it('warns about null/NaN/empty/missing parameters in scale', () => {
       expect(parseTransformString('scale()')).to.deep.equal([{ ...IDENTITY,  warnings: [
         'Found element with malformed transform: "scale()" containing 0 parameters, expected 1 or 2 parameters.'
       ]}]);
@@ -178,7 +178,7 @@ describe('Transforms', () => {
       ]}]);
     });
 
-    it('should ignore extra parameters in scale', () => {
+    it('warns about extra parameters and uses the first N valid for scale', () => {
       expect(parseTransformString('scale(-4.3,0.001,5.6)')).to.deep.equal([{ ...IDENTITY, a: -4.3, d: 0.001,  warnings: [
         'Found element with malformed transform: "scale(-4.3,0.001,5.6)" containing 3 parameters, expected 1 or 2 parameters.'
       ]}]);
@@ -217,7 +217,7 @@ describe('Transforms', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('rotate(0,1,1)'), [IDENTITY]);
     });
 
-    it('should ignore null rotate parameters', () => {
+    it('warns about null/NaN/empty/missing parameters in rotate', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('rotate()'), [{ ...IDENTITY,  warnings: [
         'Found element with malformed transform: "rotate()" containing 0 parameters, expected 1 or 3 parameters.'
       ]}]);
@@ -256,7 +256,7 @@ describe('Transforms', () => {
       ]}]);
     });
 
-    it('should ignore extra parameters in rotate', () => {
+    it('warns about extra parameters and uses the first N valid for rotate', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('rotate(0,0,0,5.6)'), [{ ...IDENTITY, warnings: [
         'Found element with malformed transform: "rotate(0,0,0,5.6)" containing 4 parameters, expected 1 or 3 parameters.'
       ]}]);
@@ -273,7 +273,7 @@ describe('Transforms', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('skewX(-360)'), [IDENTITY]);
     });
 
-    it('should ignore null skewX parameters', () => {
+    it('warns about null/NaN/empty/missing parameters in skewX', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('skewX()'), [{ ...IDENTITY,  warnings: [
         'Found element with malformed transform: "skewX()" containing 0 parameters, expected 1 parameter.'
       ]}]);
@@ -297,7 +297,7 @@ describe('Transforms', () => {
       ]}]);
     });
 
-    it('should ignore extra parameters in skewX', () => {
+    it('warns about extra parameters and uses the first N valid for skewX', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('skewX(0,0,0,5.6)'), [{ ...IDENTITY, warnings: [
         'Found element with malformed transform: "skewX(0,0,0,5.6)" containing 4 parameters, expected 1 parameter.'
       ]}]);
@@ -314,7 +314,7 @@ describe('Transforms', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('skewY(-360)'), [IDENTITY]);
     });
 
-    it('should ignore null skewY parameters', () => {
+    it('warns about null/NaN/empty/missing parameters in skewY', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('skewY()'), [{ ...IDENTITY,  warnings: [
         'Found element with malformed transform: "skewY()" containing 0 parameters, expected 1 parameter.'
       ]}]);
@@ -338,7 +338,7 @@ describe('Transforms', () => {
       ]}]);
     });
 
-    it('should ignore extra parameters in skewY', () => {
+    it('warns about extra parameters and uses the first N valid for skewY', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('skewY(0,0,0,5.6)'), [{ ...IDENTITY, warnings: [
         'Found element with malformed transform: "skewY(0,0,0,5.6)" containing 4 parameters, expected 1 parameter.'
       ]}]);
@@ -356,7 +356,7 @@ describe('Transforms', () => {
         [{ a: 0, b: 0, c: 0, d: 0, e: 0, f: 0 }]);
     });
 
-    it('should ignore null matrix parameters', () => {
+    it('warns about null/NaN/empty/missing parameters in matrix', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('matrix()'), [{ ...IDENTITY,  warnings: [
         'Found element with malformed transform: "matrix()" containing 0 parameters, expected 6 parameters.'
       ]}]);
@@ -386,7 +386,7 @@ describe('Transforms', () => {
       ]}]);
     });
 
-    it('should ignore extra parameters in matrix', () => {
+    it('warns about extra parameters and uses the first N valid for matrix', () => {
       expectTransformArraysRoughlyDeepEqual(parseTransformString('matrix(0,0,0,0,0,0,5.6)'), [{ ...IDENTITY, a: 0, d: 0, warnings: [
         'Found element with malformed transform: "matrix(0,0,0,0,0,0,5.6)" containing 7 parameters, expected 6 parameters.'
       ]}]);
@@ -423,12 +423,12 @@ describe('Transforms', () => {
     });
 
     it('should notify of badly formed arguments', () => {
-      expect(parseTransformString('translate(20.4, -50')).to.deep.equal([{ ...IDENTITY, errors: ['Malformed transform, unmatched characters: [ "translate(20.4, -50" ].'] }]);
-      expect(parseTransformString('translate(20.4, -50 rotate(34)')).to.deep.equal([{ ...IDENTITY, errors: ['Malformed transform: "translate(20.4, -50 rotate(34)".'] }]);
+      expect(parseTransformString('translate(20.4, -50')).to.deep.equal([{ ...IDENTITY, warnings: ['Malformed transform, unmatched characters: [ "translate(20.4, -50" ].'] }]);
+      expect(parseTransformString('translate(20.4, -50 rotate(34)')).to.deep.equal([{ ...IDENTITY, warnings: ['Malformed transform: "translate(20.4, -50 rotate(34)".'] }]);
       expect(parseTransformString('translate(20.4, -50) --- rotate(34)')).to.deep.equal([
         { a: 1, b: 0, c: 0, d: 1, e: 20.4, f: -50 },
         { a: 0.8290375725550416, b: 0.5591929034707469, c: -0.5591929034707469, d: 0.8290375725550416, e: 0, f: 0 },
-        { ...IDENTITY, errors: ['Malformed transform, unmatched characters: [ "---" ].'] },
+        { ...IDENTITY, warnings: ['Malformed transform, unmatched characters: [ "---" ].'] },
       ]);
     });
 
@@ -523,10 +523,28 @@ describe('Transforms', () => {
       flattenTransformArray(array);
       expect(array).to.deep.equal(arrayCopy);
     });
+  });
 
-	it('transformToString()', () => {
-		const transform = parseTransformString('matrix( 3.4, -6, 2.4, 0.005, -75, 21 )');
-		expect(transformToString(transform[0])).to.equal('matrix(3.4 -6 2.4 0.005 -75 21)');
-	});
+  describe('copyTransform()', () => {
+    it('returns a new object that deep-equals the input', () => {
+      const original = { a: 3.4, b: -6, c: 2.4, d: 0.005, e: -75, f: 21 };
+      const copy = copyTransform(original);
+      expect(copy).to.deep.equal(original);
+      expect(copy).to.not.equal(original);
+    });
+
+    it('produces a copy that is independent of the original', () => {
+      const original = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6 };
+      const copy = copyTransform(original);
+      copy.a = 999;
+      expect(original.a).to.equal(1);
+    });
+  });
+
+  describe('transformToString()', () => {
+    it('serializes a FlatSVGTransform to "matrix(a b c d e f)" form', () => {
+      const transform = parseTransformString('matrix( 3.4, -6, 2.4, 0.005, -75, 21 )');
+      expect(transformToString(transform[0])).to.equal('matrix(3.4 -6 2.4 0.005 -75 21)');
+    });
   });
 });

@@ -1,58 +1,90 @@
+[**@amandaghassaei/flat-svg**](../README.md)
+
+***
+
 [@amandaghassaei/flat-svg](../README.md) / Style
 
 # Interface: Style
 
-## Hierarchy
+## Extended by
 
-- **`Style`**
-
-  ↳ [`BaseProperties`](BaseProperties.md)
-
-  ↳ [`Properties`](Properties.md)
-
-## Table of contents
-
-### Properties
-
-- [stroke-width](Style.md#stroke-width)
-- [stroke](Style.md#stroke)
-- [fill](Style.md#fill)
-- [opacity](Style.md#opacity)
-- [color](Style.md#color)
-- [stroke-dasharray](Style.md#stroke-dasharray)
+- [`BaseProperties`](BaseProperties.md)
+- [`Properties`](Properties.md)
 
 ## Properties
 
-### stroke-width
+### stroke-width?
 
-• `Optional` **stroke-width**: `number`
+> `optional` **stroke-width?**: `number`
 
-___
+***
 
-### stroke
+### stroke?
 
-• `Optional` **stroke**: `string`
+> `optional` **stroke?**: `string`
 
-___
+***
 
-### fill
+### stroke-opacity?
 
-• `Optional` **fill**: `string`
+> `optional` **stroke-opacity?**: `number`
 
-___
+***
 
-### opacity
+### stroke-linecap?
 
-• `Optional` **opacity**: `number`
+> `optional` **stroke-linecap?**: `string`
 
-___
+***
 
-### color
+### stroke-linejoin?
 
-• `Optional` **color**: `string`
+> `optional` **stroke-linejoin?**: `string`
 
-___
+***
 
-### stroke-dasharray
+### stroke-miterlimit?
 
-• `Optional` **stroke-dasharray**: `string` \| `number`
+> `optional` **stroke-miterlimit?**: `number`
+
+***
+
+### fill?
+
+> `optional` **fill?**: `string`
+
+***
+
+### fill-opacity?
+
+> `optional` **fill-opacity?**: `number`
+
+***
+
+### opacity?
+
+> `optional` **opacity?**: `number`
+
+***
+
+### color?
+
+> `optional` **color?**: `string`
+
+***
+
+### stroke-dasharray?
+
+> `optional` **stroke-dasharray?**: `string` \| `number`
+
+***
+
+### display?
+
+> `optional` **display?**: `string`
+
+***
+
+### visibility?
+
+> `optional` **visibility?**: `string`

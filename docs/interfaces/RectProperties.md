@@ -1,141 +1,185 @@
+[**@amandaghassaei/flat-svg**](../README.md)
+
+***
+
 [@amandaghassaei/flat-svg](../README.md) / RectProperties
 
 # Interface: RectProperties
 
-## Hierarchy
+## Extends
 
 - [`BaseProperties`](BaseProperties.md)
 
-  ↳ **`RectProperties`**
-
-## Table of contents
-
-### Properties
-
-- [stroke-width](RectProperties.md#stroke-width)
-- [stroke](RectProperties.md#stroke)
-- [fill](RectProperties.md#fill)
-- [opacity](RectProperties.md#opacity)
-- [color](RectProperties.md#color)
-- [stroke-dasharray](RectProperties.md#stroke-dasharray)
-- [id](RectProperties.md#id)
-- [class](RectProperties.md#class)
-- [ids](RectProperties.md#ids)
-- [x](RectProperties.md#x)
-- [y](RectProperties.md#y)
-- [width](RectProperties.md#width)
-- [height](RectProperties.md#height)
-
 ## Properties
 
-### stroke-width
+### stroke-width?
 
-• `Optional` **stroke-width**: `number`
-
-#### Inherited from
-
-[BaseProperties](BaseProperties.md).[stroke-width](BaseProperties.md#stroke-width)
-
-___
-
-### stroke
-
-• `Optional` **stroke**: `string`
+> `optional` **stroke-width?**: `number`
 
 #### Inherited from
 
-[BaseProperties](BaseProperties.md).[stroke](BaseProperties.md#stroke)
+[`BaseProperties`](BaseProperties.md).[`stroke-width`](BaseProperties.md#stroke-width)
 
-___
+***
 
-### fill
+### stroke?
 
-• `Optional` **fill**: `string`
-
-#### Inherited from
-
-[BaseProperties](BaseProperties.md).[fill](BaseProperties.md#fill)
-
-___
-
-### opacity
-
-• `Optional` **opacity**: `number`
+> `optional` **stroke?**: `string`
 
 #### Inherited from
 
-[BaseProperties](BaseProperties.md).[opacity](BaseProperties.md#opacity)
+[`BaseProperties`](BaseProperties.md).[`stroke`](BaseProperties.md#stroke)
 
-___
+***
 
-### color
+### stroke-opacity?
 
-• `Optional` **color**: `string`
-
-#### Inherited from
-
-[BaseProperties](BaseProperties.md).[color](BaseProperties.md#color)
-
-___
-
-### stroke-dasharray
-
-• `Optional` **stroke-dasharray**: `string` \| `number`
+> `optional` **stroke-opacity?**: `number`
 
 #### Inherited from
 
-[BaseProperties](BaseProperties.md).[stroke-dasharray](BaseProperties.md#stroke-dasharray)
+[`BaseProperties`](BaseProperties.md).[`stroke-opacity`](BaseProperties.md#stroke-opacity)
 
-___
+***
 
-### id
+### stroke-linecap?
 
-• `Optional` **id**: `string`
-
-#### Inherited from
-
-[BaseProperties](BaseProperties.md).[id](BaseProperties.md#id)
-
-___
-
-### class
-
-• `Optional` **class**: `string`
+> `optional` **stroke-linecap?**: `string`
 
 #### Inherited from
 
-[BaseProperties](BaseProperties.md).[class](BaseProperties.md#class)
+[`BaseProperties`](BaseProperties.md).[`stroke-linecap`](BaseProperties.md#stroke-linecap)
 
-___
+***
 
-### ids
+### stroke-linejoin?
 
-• `Optional` **ids**: `string`
+> `optional` **stroke-linejoin?**: `string`
 
 #### Inherited from
 
-[BaseProperties](BaseProperties.md).[ids](BaseProperties.md#ids)
+[`BaseProperties`](BaseProperties.md).[`stroke-linejoin`](BaseProperties.md#stroke-linejoin)
 
-___
+***
+
+### stroke-miterlimit?
+
+> `optional` **stroke-miterlimit?**: `number`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`stroke-miterlimit`](BaseProperties.md#stroke-miterlimit)
+
+***
+
+### fill?
+
+> `optional` **fill?**: `string`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`fill`](BaseProperties.md#fill)
+
+***
+
+### fill-opacity?
+
+> `optional` **fill-opacity?**: `number`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`fill-opacity`](BaseProperties.md#fill-opacity)
+
+***
+
+### opacity?
+
+> `optional` **opacity?**: `number`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`opacity`](BaseProperties.md#opacity)
+
+***
+
+### color?
+
+> `optional` **color?**: `string`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`color`](BaseProperties.md#color)
+
+***
+
+### stroke-dasharray?
+
+> `optional` **stroke-dasharray?**: `string` \| `number`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`stroke-dasharray`](BaseProperties.md#stroke-dasharray)
+
+***
+
+### display?
+
+> `optional` **display?**: `string`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`display`](BaseProperties.md#display)
+
+***
+
+### visibility?
+
+> `optional` **visibility?**: `string`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`visibility`](BaseProperties.md#visibility)
+
+***
+
+### id?
+
+> `optional` **id?**: `string`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`id`](BaseProperties.md#id)
+
+***
+
+### class?
+
+> `optional` **class?**: `string`
+
+#### Inherited from
+
+[`BaseProperties`](BaseProperties.md).[`class`](BaseProperties.md#class)
+
+***
 
 ### x
 
-• **x**: `number`
+> **x**: `number`
 
-___
+***
 
 ### y
 
-• **y**: `number`
+> **y**: `number`
 
-___
+***
 
 ### width
 
-• **width**: `number`
+> **width**: `number`
 
-___
+***
 
 ### height
 
-• **height**: `number`
+> **height**: `number`

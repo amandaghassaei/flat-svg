@@ -1,8 +1,12 @@
+// Pull version from package.json so this stays in sync without manual edits per release.
+fetch('../package.json')
+	.then(r => r.json())
+	.then(pkg => { document.getElementById('version').innerText = `v${pkg.version}`; })
+	.catch(() => {});
+
 const container = document.getElementById('container');
 const errorsAndWarnings = document.getElementById('errorsAndWarnings');
 const elementsHover = document.getElementById('elementsHover');
-const pathsHover = document.getElementById('pathsHover');
-const segmentsHover = document.getElementById('segmentsHover');
 const filenameInput = document.getElementById('exportFilename');
 const saveButton = document.getElementById('save');
 
@@ -74,8 +78,22 @@ function updateView() {
 	const filter = {
 		key: filterAttribute.value,
 		value: filterValue.value,
-		tolerance: filterTolerance.value,
+		tolerance: parseFloat(filterTolerance.value) || 0,
 	};
+
+	// Render the full AsSVG, then drop non-matching children by index. Children
+	// in the AsSVG output are in the same order as flatSVG.elements / .paths /
+	// .segments — the index-returning filter variants align directly.
+	function filteredAsSVG(fullSvg, indices) {
+		const wrapper = document.createElement('div');
+		wrapper.innerHTML = fullSvg;
+		const svgEl = wrapper.firstElementChild;
+		const matched = new Set(indices);
+		Array.from(svgEl.children).forEach((child, i) => {
+			if (!matched.has(i)) child.remove();
+		});
+		return svgEl.outerHTML;
+	}
 
 	try {
 		// Add svg string to page.
@@ -85,29 +103,40 @@ function updateView() {
 				break;
 			case 'elements':
 				if (applyFilter.checked) {
-					container.innerHTML = FlatSVG.elementsAsSVG(flatSVG.root, flatSVG.filterElementsByStyle(filter));
+					container.innerHTML = filteredAsSVG(
+						flatSVG.elementsAsSVG,
+						flatSVG.filterElementIndicesByStyle(filter),
+					);
 				} else {
 					container.innerHTML = flatSVG.elementsAsSVG;
 				}
 				break;
 			case 'paths':
 				if (applyFilter.checked) {
-					container.innerHTML = FlatSVG.pathsAsSVG(flatSVG.root, flatSVG.filterPathsByStyle(filter));
+					container.innerHTML = filteredAsSVG(
+						flatSVG.pathsAsSVG,
+						flatSVG.filterPathIndicesByStyle(filter),
+					);
 				} else {
 					container.innerHTML = flatSVG.pathsAsSVG;
 				}
 				break;
 			case 'segments':
 				if (applyFilter.checked) {
-					container.innerHTML = FlatSVG.segmentsAsSVG(flatSVG.root, flatSVG.filterSegmentsByStyle(filter));
+					container.innerHTML = filteredAsSVG(
+						flatSVG.segmentsAsSVG,
+						flatSVG.filterSegmentIndicesByStyle(filter),
+					);
 				} else {
 					container.innerHTML = flatSVG.segmentsAsSVG;
 				}
 				break;
 		}
 	} catch (error) {
-			if (applyFilter.checked && error.message.includes('flat-svg cannot handle filters with key')) {
-			// Filter is not valid.
+		if (applyFilter.checked) {
+			// Most filter throws today come from caller-error guards (unsupported
+			// key, mismatched value type, malformed dasharray, ...). Show the
+			// "Invalid Filter Settings!" banner and fall back to the source SVG.
 			invalidFilter.style.display = 'inline-block';
 			container.innerHTML = svg;
 		} else {
@@ -151,7 +180,7 @@ function update(_svg) {
 	const preserveArcs = preserveArcsSelector.options[preserveArcsSelector.selectedIndex].value === 'true';
 	flatSVG = new FlatSVG(svg, { preserveArcs });
 
-	const { elements, paths, segments, viewBox, errors, warnings, defs, units } = flatSVG;
+	const { elements, paths, segments, viewBox, warnings, defs, units } = flatSVG;
 	document.getElementById('viewBox').innerText = `[ ${viewBox.join(',  ')} ]`;
 	if (viewBox[2] !== 0) {
 		let width = viewBox[2];
@@ -160,6 +189,7 @@ function update(_svg) {
 				break;
 			case 'pt':
 				width *= 96 / 72;
+				break;
 			case 'in':
 				width *= 96;
 				break;
@@ -189,14 +219,6 @@ function update(_svg) {
 	document.getElementById('numSegments').innerText = segments.length;
 
 	errorsAndWarnings.innerHTML = '';
-	if (errors.length) {
-		errors.forEach(error => {
-			const div = document.createElement('div');
-			div.className = 'error';
-			div.innerText = 'Error: ' + error;
-			errorsAndWarnings.append(div);
-		});
-	}
 	if (warnings.length) {
 		warnings.forEach(warning => {
 			const div = document.createElement('div');
@@ -205,7 +227,7 @@ function update(_svg) {
 			errorsAndWarnings.append(div);
 		});
 	}
-	errorsAndWarnings.style.display = (errors.length || warnings.length) ? 'block' : 'none';
+	errorsAndWarnings.style.display = warnings.length ? 'block' : 'none';
 
 	updateView();
 }

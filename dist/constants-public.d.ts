@@ -1,0 +1,13 @@
+export declare const SVG_LINE = "line";
+export declare const SVG_RECT = "rect";
+export declare const SVG_POLYGON = "polygon";
+export declare const SVG_POLYLINE = "polyline";
+export declare const SVG_PATH = "path";
+export declare const SVG_CIRCLE = "circle";
+export declare const SVG_ELLIPSE = "ellipse";
+export declare const FLAT_SVG_STRAY_VERTEX_MOVETO_ONLY = "FLAT_SVG_STRAY_VERTEX_MOVETO_ONLY";
+export declare const FLAT_SVG_STRAY_VERTEX_POLYLINE_SINGLE_POINT = "FLAT_SVG_STRAY_VERTEX_POLYLINE_SINGLE_POINT";
+export declare const FLAT_SVG_STRAY_VERTEX_POLYGON_SINGLE_POINT = "FLAT_SVG_STRAY_VERTEX_POLYGON_SINGLE_POINT";
+export declare const FLAT_SEGMENT_LINE = "FLAT_SEGMENT_LINE";
+export declare const FLAT_SEGMENT_BEZIER = "FLAT_SEGMENT_BEZIER";
+export declare const FLAT_SEGMENT_ARC = "FLAT_SEGMENT_ARC";

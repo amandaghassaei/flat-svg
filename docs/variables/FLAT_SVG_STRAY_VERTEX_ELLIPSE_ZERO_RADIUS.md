@@ -1,0 +1,9 @@
+[**@amandaghassaei/flat-svg**](../README.md)
+
+***
+
+[@amandaghassaei/flat-svg](../README.md) / FLAT\_SVG\_STRAY\_VERTEX\_ELLIPSE\_ZERO\_RADIUS
+
+# Variable: FLAT\_SVG\_STRAY\_VERTEX\_ELLIPSE\_ZERO\_RADIUS
+
+> `const` **FLAT\_SVG\_STRAY\_VERTEX\_ELLIPSE\_ZERO\_RADIUS**: `"FLAT_SVG_STRAY_VERTEX_ELLIPSE_ZERO_RADIUS"` = `'FLAT_SVG_STRAY_VERTEX_ELLIPSE_ZERO_RADIUS'`

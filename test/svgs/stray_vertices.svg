@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+	<polyline points="90,90" stroke="red" fill="none"/>
+	<polygon points="110,110" stroke="red" fill="none"/>
+	<path d="M 5 5 M 6 6 L 7 7" stroke="red" fill="none"/>
+	<path d="M 20 20 Z" stroke="red" fill="none"/>
+</svg>

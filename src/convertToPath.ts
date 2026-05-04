@@ -1,40 +1,44 @@
-import { POLYGON, POLYLINE } from './constants';
+import { SVG_POLYGON, SVG_POLYLINE } from './constants-public';
 import { applyTransform } from './transforms';
 import {
-    CircleProperties,
-    EllipseProperties,
-    LineProperties,
-    PathParser,
-    PathProperties,
-    PolygonProperties,
-    PolylineProperties,
-    RectProperties,
-    Transform,
-} from './types';
-import { removeWhitespacePadding } from './utils';
+    SVGCircleProperties,
+    SVGEllipseProperties,
+    SVGLineProperties,
+    SVGPathProperties,
+    SVGPolygonProperties,
+    SVGPolylineProperties,
+    SVGRectProperties,
+    FlatSVGTransform,
+} from './types-public';
+import { MutablePoint, PathParser, PointsConversionResult } from './types-private';
 import svgpath from 'svgpath';
 import { isNonNegativeNumber, isNumber, isString } from '@amandaghassaei/type-checks';
 
-/*
-Export any geometry object as path in Abs coordinates with only L, H, V, B, and C types.
-*/
+// Convert SVG geometry to absolute-coordinate path strings (L, H, V, B, C only).
 
-const temp = [0, 0] as [number, number];
+const temp = [0, 0] as MutablePoint;
 
+/**
+ * Convert an SVG `<line>` to a path d-string. Missing x1/y1/x2/y2 default to 0;
+ * non-numeric values push a warning and return undefined.
+ * @param properties Source `<line>` attributes.
+ * @param parsingWarnings Mutable array — populated when input is invalid.
+ * @param transform Optional matrix baked into the emitted coordinates.
+ * @returns Path d-string, or undefined on invalid input.
+ */
 export function convertLineToPath(
-    properties: LineProperties,
-    parsingErrors: string[],
-    transform?: Transform
+    properties: SVGLineProperties,
+    parsingWarnings: string[],
+    transform?: FlatSVGTransform
 ) {
     let { x1, x2, y1, y2 } = properties;
     // x1, x2, y1, y2 default to 0.
-    /* c8 ignore next if */
     if (x1 === undefined) x1 = 0;
     if (x2 === undefined) x2 = 0;
     if (y1 === undefined) y1 = 0;
     if (y2 === undefined) y2 = 0;
     if (!isNumber(x1) || !isNumber(x2) || !isNumber(y1) || !isNumber(y2)) {
-        parsingErrors.push(`Invalid <line> properties: ${JSON.stringify({ x1, y1, x2, y2 })}.`);
+        parsingWarnings.push(`Invalid <line> properties: ${JSON.stringify({ x1, y1, x2, y2 })}.`);
         return;
     }
     if (transform) {
@@ -48,10 +52,18 @@ export function convertLineToPath(
     return `M${x1},${y1} L${x2},${y2}`;
 }
 
+/**
+ * Convert an SVG `<rect>` to a path d-string with four explicit edges + Z.
+ * Pushes a warning and returns undefined on invalid x/y/width/height.
+ * @param properties Source `<rect>` attributes.
+ * @param parsingWarnings Mutable array — populated when input is invalid.
+ * @param transform Optional matrix baked into the emitted coordinates.
+ * @returns Path d-string, or undefined on invalid input.
+ */
 export function convertRectToPath(
-    properties: RectProperties,
-    parsingErrors: string[],
-    transform?: Transform
+    properties: SVGRectProperties,
+    parsingWarnings: string[],
+    transform?: FlatSVGTransform
 ) {
     let { x, y } = properties;
     // x and y default to 0.
@@ -64,7 +76,7 @@ export function convertRectToPath(
         !isNonNegativeNumber(width) ||
         !isNonNegativeNumber(height)
     ) {
-        parsingErrors.push(
+        parsingWarnings.push(
             `Invalid <rect> properties: ${JSON.stringify({ x, y, width, height })}.`
         );
         return;
@@ -91,84 +103,112 @@ export function convertRectToPath(
         temp[1] = y4;
         [x4, y4] = applyTransform(temp, transform);
     }
-    return `M${x1},${y1} L${x2},${y2} L${x3},${y3} L${x4},${y4} z`;
+    // 4 explicit L edges + redundant Z (dropped by Z-to-self heuristic) → uniform
+    // "4 edges = 4 segments" for every rect, even degenerate ones. Matches how
+    // Illustrator/Inkscape serialize <rect>.
+    return `M${x1},${y1} L${x2},${y2} L${x3},${y3} L${x4},${y4} L${x1},${y1} Z`;
 }
 
+/**
+ * Convert an SVG `<circle>` to a svgpath PathParser. Encoded as two arcs
+ * (or a degenerate there-and-back line when r=0); arcs are flattened to
+ * cubic beziers unless `_preserveArcs` is true.
+ * @param properties Source `<circle>` attributes.
+ * @param parsingWarnings Mutable array — populated when input is invalid.
+ * @param _preserveArcs Keep `A` commands; otherwise approximate with cubics.
+ * @param transform Optional matrix baked into the emitted coordinates.
+ * @returns svgpath PathParser, or undefined on invalid input.
+ */
 export function convertCircleToPath(
-    properties: CircleProperties,
-    parsingErrors: string[],
+    properties: SVGCircleProperties,
+    parsingWarnings: string[],
     _preserveArcs: boolean,
-    transform?: Transform
+    transform?: FlatSVGTransform
 ) {
     let { cx, cy, r } = properties;
     // cx, cy, r default to 0.
     if (cx === undefined) cx = 0;
-    /* c8 ignore next if */
     if (cy === undefined) cy = 0;
     if (r === undefined) r = 0;
     if (!isNumber(cx) || !isNumber(cy) || !isNonNegativeNumber(r)) {
-        parsingErrors.push(`Invalid <circle> properties: ${JSON.stringify({ cx, cy, r })}.`);
+        parsingWarnings.push(`Invalid <circle> properties: ${JSON.stringify({ cx, cy, r })}.`);
         return;
     }
     const pathParser = _convertEllipseToPath(cx, cy, r, r, _preserveArcs, transform);
-    /* c8 ignore next 7 */
+    /* c8 ignore start -- defensive: _convertEllipseToPath always returns a valid svgpath (it constructs the
+       d-string from validated numeric inputs and never produces a parse error). The err check is here
+       to catch a future change in _convertEllipseToPath's contract. */
     if (pathParser.err) {
-        // Should not hit this.
-        parsingErrors.push(
+        parsingWarnings.push(
             `Problem parsing <circle> ${JSON.stringify({ cx, cy, r })} with ${pathParser.err}.`
         );
         return;
     }
+    /* c8 ignore stop */
     return pathParser;
 }
 
+/**
+ * Convert an SVG `<ellipse>` to a svgpath PathParser. Same encoding as
+ * convertCircleToPath but with separate rx / ry radii.
+ * @param properties Source `<ellipse>` attributes.
+ * @param parsingWarnings Mutable array — populated when input is invalid.
+ * @param _preserveArcs Keep `A` commands; otherwise approximate with cubics.
+ * @param transform Optional matrix baked into the emitted coordinates.
+ * @returns svgpath PathParser, or undefined on invalid input.
+ */
 export function convertEllipseToPath(
-    properties: EllipseProperties,
-    parsingErrors: string[],
+    properties: SVGEllipseProperties,
+    parsingWarnings: string[],
     _preserveArcs: boolean,
-    transform?: Transform
+    transform?: FlatSVGTransform
 ) {
     let { cx, cy, rx, ry } = properties;
     // cx, cy, rx, ry default to 0.
-    /* c8 ignore next if */
     if (cx === undefined) cx = 0;
     if (cy === undefined) cy = 0;
     if (rx === undefined) rx = 0;
     if (ry === undefined) ry = 0;
     if (!isNumber(cx) || !isNumber(cy) || !isNonNegativeNumber(rx) || !isNonNegativeNumber(ry)) {
-        parsingErrors.push(`Invalid <ellipse> properties: ${JSON.stringify({ cx, cy, rx, ry })}.`);
+        parsingWarnings.push(`Invalid <ellipse> properties: ${JSON.stringify({ cx, cy, rx, ry })}.`);
         return;
     }
     const pathParser = _convertEllipseToPath(cx, cy, rx, ry, _preserveArcs, transform);
-    /* c8 ignore next 9 */
+    /* c8 ignore start -- defensive: same rationale as convertCircleToPath above — _convertEllipseToPath
+       always returns a valid svgpath from validated numeric inputs. */
     if (pathParser.err) {
-        // Should not hit this.
-        parsingErrors.push(
+        parsingWarnings.push(
             `Problem parsing <ellipse> ${JSON.stringify({ cx, cy, rx, ry })} with ${
                 pathParser.err
             }.`
         );
         return;
     }
+    /* c8 ignore stop */
     return pathParser;
 }
 
-// https://stackoverflow.com/questions/59011294/ellipse-to-path-convertion-using-javascript
-// const ellipsePoints = new Array(24).fill(0);
+// Reference: https://stackoverflow.com/questions/59011294/ellipse-to-path-convertion-using-javascript
 function _convertEllipseToPath(
     cx: number,
     cy: number,
     rx: number,
     ry: number,
     _preserveArcs: boolean,
-    transform?: Transform
+    transform?: FlatSVGTransform
 ) {
-    // Convert ellipse to 2 arcs.
-    const d = `M${cx - rx},${cy} a${rx},${ry} 0 1,0 ${rx * 2},0 a ${rx},${ry} 0 1,0 -${rx * 2},0`;
+    // Degenerate ellipses (rx=0 || ry=0): emit as a there-and-back line so
+    // every degenerate case yields exactly 2 segments uniformly. Diverges
+    // from browser rendering, which treats rx=0 || ry=0 as no-render.
+    let d: string;
+    if (rx === 0 || ry === 0) {
+        d = `M${cx - rx},${cy - ry} L${cx + rx},${cy + ry} L${cx - rx},${cy - ry} Z`;
+    } else {
+        // Normal ellipse: encode as 2 arcs.
+        d = `M${cx - rx},${cy} a${rx},${ry} 0 1,0 ${rx * 2},0 a ${rx},${ry} 0 1,0 -${rx * 2},0`;
+    }
     let pathParser = svgpath(d).abs() as any as PathParser;
-    // Convert arcs to bezier is _preserveArcs == false.
     if (!_preserveArcs) pathParser = pathParser.unarc();
-    // Apply transform.
     if (transform)
         pathParser = pathParser.matrix([
             transform.a,
@@ -179,155 +219,143 @@ function _convertEllipseToPath(
             transform.f,
         ]);
     return pathParser;
-
-    // 	const kappa = 0.5522847498;
-    // 	const ox = rx * kappa; // x offset for the control point
-    // 	const oy = ry * kappa; // y offset for the control point
-
-    // 	ellipsePoints[0] = cx - rx;
-    // 	ellipsePoints[1] = cy;
-
-    // 	ellipsePoints[2] = cx - rx;
-    // 	ellipsePoints[3] = cy - oy;
-
-    // 	ellipsePoints[4] = cx - ox;
-    // 	ellipsePoints[5] = cy - ry;
-
-    // 	ellipsePoints[6] = cx;
-    // 	ellipsePoints[7] = cy - ry;
-
-    // 	ellipsePoints[8] = cx + ox;
-    // 	ellipsePoints[9] = cy - ry;
-
-    // 	ellipsePoints[10] = cx + rx;
-    // 	ellipsePoints[11] = cy - oy;
-
-    // 	ellipsePoints[12] = cx + rx;
-    // 	ellipsePoints[13] = cy;
-
-    // 	ellipsePoints[14] = cx + rx;
-    // 	ellipsePoints[15] = cy + oy;
-
-    // 	ellipsePoints[16] = cx + ox;
-    // 	ellipsePoints[17] = cy + ry;
-
-    // 	ellipsePoints[18] = cx;
-    // 	ellipsePoints[19] = cy + ry;
-
-    // 	ellipsePoints[20] = cx - ox;
-    // 	ellipsePoints[21] = cy + ry;
-
-    // 	ellipsePoints[22] = cx - rx;
-    // 	ellipsePoints[23] = cy + oy;
-
-    // 	if (transform) {
-    // 		for (let i = 0, length = ellipsePoints.length / 2; i < length; i++) {
-    // 			temp[0] = ellipsePoints[2 * i];
-    // 			temp[1] = ellipsePoints[2 * i + 1];
-    // 			applyTransform(temp, transform);
-    // 			ellipsePoints[2 * i] = temp[0];
-    // 			ellipsePoints[2 * i + 1] = temp[1];
-    // 		}
-    // 	}
-    // 	return `M${ellipsePoints[0]},${ellipsePoints[1]} \
-    // C${ellipsePoints[2]},${ellipsePoints[3]} ${ellipsePoints[4]},${ellipsePoints[5]} ${ellipsePoints[6]},${ellipsePoints[7]} \
-    // C${ellipsePoints[8]},${ellipsePoints[9]} ${ellipsePoints[10]},${ellipsePoints[11]} ${ellipsePoints[12]},${ellipsePoints[13]} \
-    // C${ellipsePoints[14]},${ellipsePoints[15]} ${ellipsePoints[16]},${ellipsePoints[17]} ${ellipsePoints[18]},${ellipsePoints[19]} \
-    // C${ellipsePoints[20]},${ellipsePoints[21]} ${ellipsePoints[22]},${ellipsePoints[23]} ${ellipsePoints[0]},${ellipsePoints[1]} \
-    // z`;
 }
 
+/**
+ * Convert an SVG `<polygon>` to a path d-string with explicit L-back-to-start
+ * + Z. A single-point points list returns `{ strayPoint }` instead of a path.
+ * @param properties Source `<polygon>` attributes.
+ * @param parsingWarnings Mutable array — populated when input is invalid.
+ * @param transform Optional matrix baked into the emitted coordinates.
+ * @returns Path d-string, stray-point object, or undefined on invalid input.
+ */
 export function convertPolygonToPath(
-    properties: PolygonProperties,
-    parsingErrors: string[],
-    transform?: Transform
-) {
+    properties: SVGPolygonProperties,
+    parsingWarnings: string[],
+    transform?: FlatSVGTransform
+): PointsConversionResult {
     const { points } = properties;
     if (!isString(points)) {
-        parsingErrors.push(`Invalid <polygon> properties: ${JSON.stringify({ points })}.`);
-        return;
+        parsingWarnings.push(`Invalid <polygon> properties: ${JSON.stringify({ points })}.`);
+        return undefined;
     }
-    const path = _convertPointsToPath(points, parsingErrors, POLYGON, transform);
-    if (!path) return path;
-    return path + ' z';
+    return _convertPointsToPath(points, parsingWarnings, SVG_POLYGON, transform);
 }
 
+/**
+ * Convert an SVG `<polyline>` to a path d-string. Same as convertPolygonToPath
+ * but without the closing edge + Z.
+ * @param properties Source `<polyline>` attributes.
+ * @param parsingWarnings Mutable array — populated when input is invalid.
+ * @param transform Optional matrix baked into the emitted coordinates.
+ * @returns Path d-string, stray-point object, or undefined on invalid input.
+ */
 export function convertPolylineToPath(
-    properties: PolylineProperties,
-    parsingErrors: string[],
-    transform?: Transform
-) {
+    properties: SVGPolylineProperties,
+    parsingWarnings: string[],
+    transform?: FlatSVGTransform
+): PointsConversionResult {
     const { points } = properties;
     if (!isString(points)) {
-        parsingErrors.push(`Invalid <polyline> properties: ${JSON.stringify({ points })}.`);
-        return;
+        parsingWarnings.push(`Invalid <polyline> properties: ${JSON.stringify({ points })}.`);
+        return undefined;
     }
-    return _convertPointsToPath(points, parsingErrors, POLYLINE, transform);
+    return _convertPointsToPath(points, parsingWarnings, SVG_POLYLINE, transform);
+}
+
+/**
+ * Tokenize a points attribute into (x, y) pairs. Per SVG spec, coordinates may
+ * be separated by any combination of commas and whitespace. Returns undefined
+ * if any token isn't a valid number, or if there aren't at least 2 valid tokens.
+ * Trailing odd tokens are truncated (browser-compatible) — diverges from strict
+ * spec but matches what real-world SVG renderers do.
+ */
+function _parsePointPairs(pointsString: string): [number, number][] | undefined {
+    const tokens = pointsString.trim().split(/[\s,]+/).filter((s) => s !== '');
+    const pairCount = Math.floor(tokens.length / 2);
+    if (pairCount === 0) return undefined;
+    const pairs: [number, number][] = [];
+    for (let i = 0; i < pairCount; i++) {
+        const x = parseFloat(tokens[2 * i]);
+        const y = parseFloat(tokens[2 * i + 1]);
+        if (isNaN(x) || isNaN(y)) return undefined;
+        pairs.push([x, y]);
+    }
+    return pairs;
 }
 
 function _convertPointsToPath(
     pointsString: string,
-    parsingErrors: string[],
-    elementType: typeof POLYGON | typeof POLYLINE,
-    transform?: Transform
-) {
-    const points = removeWhitespacePadding(pointsString).split(' ');
+    parsingWarnings: string[],
+    elementType: typeof SVG_POLYGON | typeof SVG_POLYLINE,
+    transform?: FlatSVGTransform,
+): PointsConversionResult {
+    const pairs = _parsePointPairs(pointsString);
+    if (!pairs) {
+        parsingWarnings.push(
+            `Unable to parse points string: "${pointsString}" in <${elementType}>.`
+        );
+        return undefined;
+    }
+    if (pairs.length === 1) {
+        // Single-point polygon/polyline produces no edges — surface as a stray
+        // vertex so the caller can flag it diagnostically rather than emit a
+        // zero-length path. Caller applies any transform (kept here in source
+        // coords, parallel to how other stray-vertex sites work).
+        return { strayPoint: pairs[0] };
+    }
     let d = '';
-    while (points.length) {
-        const point = points.shift()!.split(',');
-        if (point.length === 1) {
-            // Sometimes polyline is not separated by commas, only by whitespace.
-            if (points.length && points.length % 2 === 1) {
-                point.push(points.shift()!); // Get next element in points array.
-            }
-        }
-        if (point.length !== 2) {
-            parsingErrors.push(
-                `Unable to parse points string: "${pointsString}" in <${elementType}>.`
-            );
-            return;
-        }
-        let x = parseFloat(point[0]);
-        let y = parseFloat(point[1]);
-        if (isNaN(x) || isNaN(y)) {
-            parsingErrors.push(
-                `Unable to parse points string: "${pointsString}" in <${elementType}>.`
-            );
-            return;
-        }
+    let firstX = 0;
+    let firstY = 0;
+    for (let i = 0; i < pairs.length; i++) {
+        let x = pairs[i][0];
+        let y = pairs[i][1];
         if (transform) {
             temp[0] = x;
             temp[1] = y;
             [x, y] = applyTransform(temp, transform);
         }
-        if (d === '') {
-            d += `M${x},${y}`;
+        if (i === 0) {
+            firstX = x;
+            firstY = y;
+            d = `M${x},${y}`;
         } else {
             d += ` L${x},${y}`;
         }
     }
+    if (elementType === SVG_POLYGON) {
+        // Explicit L back to the first point so N points → N edges (rather
+        // than N-1 + an implicit Z-closure). Trailing Z is dropped as
+        // close-to-self by FlatSVG's z-to-self heuristic.
+        d += ` L${firstX},${firstY} Z`;
+    }
     return d;
 }
 
+/**
+ * Normalize an SVG `<path>` d-string: absolute coordinates (.abs()), short
+ * forms expanded to full Q/C (.unshort()), and arcs flattened to cubics
+ * (.unarc()) unless `_preserveArcs` is true.
+ * @param properties Source `<path>` attributes.
+ * @param parsingWarnings Mutable array — populated when input is invalid.
+ * @param _preserveArcs Keep `A` commands; otherwise approximate with cubics.
+ * @param transform Optional matrix baked into the emitted coordinates.
+ * @returns svgpath PathParser, or undefined on invalid input.
+ */
 export function convertPathToPath(
-    properties: PathProperties,
-    parsingErrors: string[],
+    properties: SVGPathProperties,
+    parsingWarnings: string[],
     _preserveArcs: boolean,
-    transform?: Transform
+    transform?: FlatSVGTransform
 ) {
     const { d } = properties;
     if (!isString(d)) {
-        parsingErrors.push(`Invalid <path> properties: ${JSON.stringify({ d })}.`);
+        parsingWarnings.push(`Invalid <path> properties: ${JSON.stringify({ d })}.`);
         return;
     }
-    // Convert to absolute coordinates,
-    // Convert smooth curves (T/S) to regular Bezier (Q/C).
+    // .abs() → absolute coords; .unshort() → expand T/S to Q/C.
     let pathParser = svgpath(d).abs().unshort() as any as PathParser;
-    if (_preserveArcs) {
-        // Convert arcs to bezier.
-        pathParser = pathParser.unarc();
-    }
-    // Apply transform.
+    if (!_preserveArcs) pathParser = pathParser.unarc();
     if (transform) {
         pathParser = pathParser.matrix([
             transform.a,
@@ -339,7 +367,7 @@ export function convertPathToPath(
         ]);
     }
     if (pathParser.err) {
-        parsingErrors.push(
+        parsingWarnings.push(
             `Problem parsing <path> ${JSON.stringify({ d })} with ${pathParser.err}.`
         );
         return;

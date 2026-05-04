@@ -1,4 +1,8 @@
 import { removeWhitespacePadding } from './utils';
+/**
+ * Build a fresh identity matrix `{a:1, b:0, c:0, d:1, e:0, f:0}`.
+ * @returns A new FlatSVGTransform set to identity.
+ */
 export function initIdentityTransform() {
     const transform = {
         a: 1,
@@ -10,10 +14,14 @@ export function initIdentityTransform() {
     };
     return transform;
 }
-// Parse transforms ourselves so we can attach errors and warnings for more feedback in ui.
-// https://gist.github.com/petersirka/dfac415e1e1e4993af826c0ff706eb4d/
-// https://github.com/fontello/svgpath/blob/master/lib/transform_parse.js
-// https://www.w3.org/TR/SVG11/coords.html#TransformAttribute
+/**
+ * Parse an SVG `transform` attribute string into an ordered list of matrices.
+ * Hand-rolled (rather than svgpath's parser) so per-transform warnings can be
+ * surfaced. Spec: https://www.w3.org/TR/SVG11/coords.html#TransformAttribute
+ * @param string Raw transform attribute value (e.g. `"translate(1,2) rotate(45)"`).
+ * @param tagName Optional element tag name, included in warning messages.
+ * @returns Array of parsed transforms in source order; malformed entries carry `warnings`.
+ */
 export function parseTransformString(string, tagName) {
     const transformStrings = string.match(/(translate|matrix|rotate|skewX|skewY|scale)\s*\(\s*(.*?)\s*\)/gi);
     const unusedCharacters = [string.slice()]; // Place to store any characters in transform that were missed.
@@ -22,7 +30,7 @@ export function parseTransformString(string, tagName) {
         // Loop through all transforms (many may be chained together e.g. "translate(1, 45) rotate(56)").
         for (let i = 0; i < transformStrings.length; i++) {
             const transform = initIdentityTransform(); // Init identity transform to start.
-            const transformString = transformStrings[i]; // Transform as a string.
+            const transformString = transformStrings[i]; // FlatSVGTransform as a string.
             // Keep track of what hasn't been matched.
             const lastString = unusedCharacters.pop();
             const matchIndex = lastString.indexOf(transformString);
@@ -32,7 +40,7 @@ export function parseTransformString(string, tagName) {
             if (transformComponents.length > 2)
                 transformComponents.pop(); // Remove empty string at the end of split.
             if (transformComponents.length !== 2) {
-                transform.errors = [`Malformed transform: "${transformString}".`];
+                transform.warnings = [`Malformed transform: "${transformString}".`];
                 transforms.push(transform);
                 continue;
             }
@@ -55,24 +63,21 @@ export function parseTransformString(string, tagName) {
             let expectedNumParameters = [];
             switch (transformName) {
                 case 'translate':
-                    // translate(<tx> [<ty>]), which specifies a translation by tx and ty. If <ty> is not provided, it is assumed to be zero.
+                    // translate(<tx> [<ty>]) — ty defaults to 0.
                     expectedNumParameters = [1, 2];
                     transform.e = floatParams[0] || 0;
                     transform.f = floatParams[1] || 0;
                     break;
                 case 'scale':
-                    // scale(<sx> [<sy>]), which specifies a scale operation by sx and sy. If <sy> is not provided, it is assumed to be equal to <sx>.
+                    // scale(<sx> [<sy>]) — sy defaults to sx.
                     expectedNumParameters = [1, 2];
-                    // Default value of 1, but allow zero scale to pass through.
+                    // Default 1; allow explicit 0 through.
                     transform.a = floatParams[0] === 0 ? 0 : floatParams[0] || 1;
                     transform.d = floatParams[1] === 0 ? 0 : floatParams[1] || transform.a;
                     break;
                 case 'rotate': {
-                    // rotate(<rotate-angle> [<cx> <cy>]), which specifies a rotation by <rotate-angle> degrees about a given point.
-                    // If optional parameters <cx> and <cy> are not supplied, the rotate is about the origin of the current user coordinate system.
-                    // If optional parameters <cx> and <cy> are supplied, the rotate is about the point (cx, cy).
+                    // rotate(<angle-deg> [<cx> <cy>]) — angle in degrees, optional pivot defaults to origin.
                     expectedNumParameters = [1, 3];
-                    // Rotation angle is in degrees.
                     const a = ((floatParams[0] || 0) * Math.PI) / 180;
                     if (a !== 0) {
                         const x = floatParams[1] || 0;
@@ -89,27 +94,25 @@ export function parseTransformString(string, tagName) {
                     break;
                 }
                 case 'skewx': {
-                    // skewX(<skew-angle>), which specifies a skew transformation along the x-axis.
+                    // skewX(<angle-deg>)
                     expectedNumParameters = [1];
-                    // Rotation angle is in degrees.
                     const a = ((floatParams[0] || 0) * Math.PI) / 180;
                     if (a !== 0)
                         transform.c = Math.tan(a);
                     break;
                 }
                 case 'skewy': {
-                    // skewY(<skew-angle>), which specifies a skew transformation along the y-axis.
+                    // skewY(<angle-deg>)
                     expectedNumParameters = [1];
-                    // Rotation angle is in degrees.
                     const a = ((floatParams[0] || 0) * Math.PI) / 180;
                     if (a !== 0)
                         transform.b = Math.tan(a);
                     break;
                 }
                 case 'matrix':
-                    // matrix(<a> <b> <c> <d> <e> <f>), which specifies a transformation in the form of a transformation matrix of six values.
+                    // matrix(<a> <b> <c> <d> <e> <f>)
                     expectedNumParameters = [6];
-                    // For elements with default value of 1, allow zero to pass through.
+                    // Default 1 for a/d; allow explicit 0 through.
                     transform.a = floatParams[0] === 0 ? 0 : floatParams[0] || 1;
                     transform.b = floatParams[1] || 0;
                     transform.c = floatParams[2] || 0;
@@ -117,12 +120,13 @@ export function parseTransformString(string, tagName) {
                     transform.e = floatParams[4] || 0;
                     transform.f = floatParams[5] || 0;
                     break;
-                /* c8 ignore next 5 */
+                /* c8 ignore start -- defensive: unreachable per the regex at the top of this function, which only captures
+                   (translate|matrix|rotate|skewX|skewY|scale). After .toLowerCase() every captured name maps to one of the
+                   six switch cases above. Kept as a guard in case the regex ever expands to accept more transform names. */
                 default:
-                    // It should not be possible to hit this.
-                    // Should be caught by regex at top of function, any invalid transforms go to unusedCharacters.
-                    transform.errors = [`Unknown transform ${transformName}.`];
+                    transform.warnings = [`Unknown transform ${transformName}.`];
                     break;
+                /* c8 ignore stop */
             }
             // Add warnings if necessary.
             const warnings = [];
@@ -157,7 +161,7 @@ export function parseTransformString(string, tagName) {
     }
     if (unusedCharacters.length) {
         const transform = initIdentityTransform();
-        transform.errors = [
+        transform.warnings = [
             `Malformed transform, unmatched characters: [ ${unusedCharacters
                 .map((str) => `"${str}"`)
                 .join(', ')} ].`,
@@ -166,6 +170,12 @@ export function parseTransformString(string, tagName) {
     }
     return transforms;
 }
+/**
+ * Compose a list of transforms into a single matrix by left-to-right
+ * multiplication. Does not modify the input array or its elements.
+ * @param transforms Ordered list of FlatSVGTransform to compose.
+ * @returns A new FlatSVGTransform equal to `t[0] · t[1] · ... · t[n-1]`.
+ */
 export function flattenTransformArray(transforms) {
     // Flatten transforms to a single matrix.
     const transform = copyTransform(transforms[0]);
@@ -174,6 +184,13 @@ export function flattenTransformArray(transforms) {
     }
     return transform;
 }
+/**
+ * Matrix-multiply `t2` into `t1` in place. The return value and `t1` reference
+ * the same object after the call.
+ * @param t1 Left operand — mutated to hold the product.
+ * @param t2 Right operand — read only.
+ * @returns The mutated `t1`.
+ */
 export function dotTransforms(t1, t2) {
     const a = t1.a * t2.a + t1.c * t2.b;
     const b = t1.b * t2.a + t1.d * t2.b;
@@ -190,6 +207,12 @@ export function dotTransforms(t1, t2) {
     t1.f = f;
     return t1;
 }
+/**
+ * Apply a transform to a 2D point in place.
+ * @param p Mutable [x, y] tuple — coordinates are overwritten with the result.
+ * @param t Transform to apply.
+ * @returns The mutated `p`.
+ */
 export function applyTransform(p, t) {
     const x = t.a * p[0] + t.c * p[1] + t.e;
     const y = t.b * p[0] + t.d * p[1] + t.f;
@@ -198,6 +221,12 @@ export function applyTransform(p, t) {
     p[1] = y;
     return p;
 }
+/**
+ * Shallow-copy the 6 matrix fields of a transform. Discards any extra keys
+ * (e.g. `warnings` on a TransformParsed) — copy those explicitly if needed.
+ * @param t Source transform.
+ * @returns A new FlatSVGTransform with matching a/b/c/d/e/f.
+ */
 export function copyTransform(t) {
     return {
         a: t.a,
@@ -208,6 +237,11 @@ export function copyTransform(t) {
         f: t.f,
     };
 }
+/**
+ * Serialize a transform to SVG `matrix(a b c d e f)` form.
+ * @param t Transform to serialize.
+ * @returns String of the form `matrix(a b c d e f)`.
+ */
 export function transformToString(t) {
     return `matrix(${t.a} ${t.b} ${t.c} ${t.d} ${t.e} ${t.f})`;
 }

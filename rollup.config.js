@@ -1,10 +1,9 @@
 import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
-import { terser } from "rollup-plugin-terser";
-import nodePolyfills from 'rollup-plugin-polyfill-node';
-import dts from "rollup-plugin-dts";
-import del from "rollup-plugin-delete";
+import terser from '@rollup/plugin-terser';
+import dts from 'rollup-plugin-dts';
+import del from 'rollup-plugin-delete';
 
 export default [
 	{
@@ -26,11 +25,15 @@ export default [
 		],
 		plugins: [
 			commonjs(),
-			nodePolyfills(),
 			resolve(),
 			typescript({
 				sourceMap: true,
 				inlineSources: true,
+				outDir: './bundle',
+				rootDir: './src',
+				declaration: true,
+				declarationDir: './bundle',
+				noEmit: false,
 			}),
 		],
 	},

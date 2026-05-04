@@ -13,14 +13,12 @@ describe('test files', () => {
     it('self-intersecting2-01.svg', () => {
         const svg = new FlatSVG(self_intersecting2_01);
         expect(svg.segments.length).to.equal(10);
-        expect(svg.errors.length).to.equal(0);
         expect(svg.warnings.length).to.equal(0);
     });
 
     it('self-intersecting2-01.svg + preserveArcs', () => {
         const svg = new FlatSVG(self_intersecting2_01, { preserveArcs: true });
         expect(svg.segments.length).to.equal(10);
-        expect(svg.errors.length).to.equal(0);
         expect(svg.warnings.length).to.equal(0);
         expect(svg.segmentsAsSVG).to
             .equal(`<svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 792">
@@ -37,14 +35,13 @@ describe('test files', () => {
 </svg>`);
     });
 
-    it('self-intersecting2-01.svg', () => {
+    it('strip-edemaine.svg', () => {
         const svg = new FlatSVG(strip_edemaine);
         expect(svg.filterElementsByStyle({ key: 'stroke', value: 'lime' }).length).to.equal(4);
         expect(svg.filterSegmentsByStyle({ key: 'stroke', value: 'red' }).length).to.equal(10); // There is an extra red line hiding under the boundary.
         expect(svg.filterSegmentsByStyle({ key: 'stroke', value: 'blue' }).length).to.equal(10); // There is an extra blue line hiding under the boundary.
         expect(svg.filterSegmentsByStyle({ key: 'stroke', value: 'black' }).length).to.equal(4);
         expect(svg.segments.length).to.equal(28);
-        expect(svg.errors.length).to.equal(0);
         expect(svg.warnings.length).to.equal(0);
     });
 });

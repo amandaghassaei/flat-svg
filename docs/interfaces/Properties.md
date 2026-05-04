@@ -1,213 +1,279 @@
+[**@amandaghassaei/flat-svg**](../README.md)
+
+***
+
 [@amandaghassaei/flat-svg](../README.md) / Properties
 
 # Interface: Properties
 
-## Hierarchy
+## Extends
 
 - [`Style`](Style.md)
 
-  ↳ **`Properties`**
-
-## Table of contents
-
-### Properties
-
-- [stroke-width](Properties.md#stroke-width)
-- [stroke](Properties.md#stroke)
-- [fill](Properties.md#fill)
-- [opacity](Properties.md#opacity)
-- [color](Properties.md#color)
-- [stroke-dasharray](Properties.md#stroke-dasharray)
-- [viewBox](Properties.md#viewbox)
-- [id](Properties.md#id)
-- [class](Properties.md#class)
-- [x1](Properties.md#x1)
-- [y1](Properties.md#y1)
-- [x2](Properties.md#x2)
-- [y2](Properties.md#y2)
-- [x](Properties.md#x)
-- [y](Properties.md#y)
-- [width](Properties.md#width)
-- [height](Properties.md#height)
-- [points](Properties.md#points)
-- [d](Properties.md#d)
-- [cx](Properties.md#cx)
-- [cy](Properties.md#cy)
-- [rx](Properties.md#rx)
-- [ry](Properties.md#ry)
-- [r](Properties.md#r)
-- [transform](Properties.md#transform)
-
 ## Properties
 
-### stroke-width
+### stroke-width?
 
-• `Optional` **stroke-width**: `number`
-
-#### Inherited from
-
-[Style](Style.md).[stroke-width](Style.md#stroke-width)
-
-___
-
-### stroke
-
-• `Optional` **stroke**: `string`
+> `optional` **stroke-width?**: `number`
 
 #### Inherited from
 
-[Style](Style.md).[stroke](Style.md#stroke)
+[`Style`](Style.md).[`stroke-width`](Style.md#stroke-width)
 
-___
+***
 
-### fill
+### stroke?
 
-• `Optional` **fill**: `string`
-
-#### Inherited from
-
-[Style](Style.md).[fill](Style.md#fill)
-
-___
-
-### opacity
-
-• `Optional` **opacity**: `number`
+> `optional` **stroke?**: `string`
 
 #### Inherited from
 
-[Style](Style.md).[opacity](Style.md#opacity)
+[`Style`](Style.md).[`stroke`](Style.md#stroke)
 
-___
+***
 
-### color
+### stroke-opacity?
 
-• `Optional` **color**: `string`
-
-#### Inherited from
-
-[Style](Style.md).[color](Style.md#color)
-
-___
-
-### stroke-dasharray
-
-• `Optional` **stroke-dasharray**: `string` \| `number`
+> `optional` **stroke-opacity?**: `number`
 
 #### Inherited from
 
-[Style](Style.md).[stroke-dasharray](Style.md#stroke-dasharray)
+[`Style`](Style.md).[`stroke-opacity`](Style.md#stroke-opacity)
 
-___
+***
 
-### viewBox
+### stroke-linecap?
 
-• `Optional` **viewBox**: `string`
+> `optional` **stroke-linecap?**: `string`
 
-___
+#### Inherited from
 
-### id
+[`Style`](Style.md).[`stroke-linecap`](Style.md#stroke-linecap)
 
-• `Optional` **id**: `string`
+***
 
-___
+### stroke-linejoin?
 
-### class
+> `optional` **stroke-linejoin?**: `string`
 
-• `Optional` **class**: `string`
+#### Inherited from
 
-___
+[`Style`](Style.md).[`stroke-linejoin`](Style.md#stroke-linejoin)
 
-### x1
+***
 
-• `Optional` **x1**: `number`
+### stroke-miterlimit?
 
-___
+> `optional` **stroke-miterlimit?**: `number`
 
-### y1
+#### Inherited from
 
-• `Optional` **y1**: `number`
+[`Style`](Style.md).[`stroke-miterlimit`](Style.md#stroke-miterlimit)
 
-___
+***
 
-### x2
+### fill?
 
-• `Optional` **x2**: `number`
+> `optional` **fill?**: `string`
 
-___
+#### Inherited from
 
-### y2
+[`Style`](Style.md).[`fill`](Style.md#fill)
 
-• `Optional` **y2**: `number`
+***
 
-___
+### fill-opacity?
 
-### x
+> `optional` **fill-opacity?**: `number`
 
-• `Optional` **x**: `string`
+#### Inherited from
 
-___
+[`Style`](Style.md).[`fill-opacity`](Style.md#fill-opacity)
 
-### y
+***
 
-• `Optional` **y**: `string`
+### opacity?
 
-___
+> `optional` **opacity?**: `number`
 
-### width
+#### Inherited from
 
-• `Optional` **width**: `string`
+[`Style`](Style.md).[`opacity`](Style.md#opacity)
 
-___
+***
 
-### height
+### color?
 
-• `Optional` **height**: `string`
+> `optional` **color?**: `string`
 
-___
+#### Inherited from
 
-### points
+[`Style`](Style.md).[`color`](Style.md#color)
 
-• `Optional` **points**: `string`
+***
 
-___
+### stroke-dasharray?
 
-### d
+> `optional` **stroke-dasharray?**: `string` \| `number`
 
-• `Optional` **d**: `string`
+#### Inherited from
 
-___
+[`Style`](Style.md).[`stroke-dasharray`](Style.md#stroke-dasharray)
 
-### cx
+***
 
-• `Optional` **cx**: `number`
+### display?
 
-___
+> `optional` **display?**: `string`
 
-### cy
+#### Inherited from
 
-• `Optional` **cy**: `number`
+[`Style`](Style.md).[`display`](Style.md#display)
 
-___
+***
 
-### rx
+### visibility?
 
-• `Optional` **rx**: `number`
+> `optional` **visibility?**: `string`
 
-___
+#### Inherited from
 
-### ry
+[`Style`](Style.md).[`visibility`](Style.md#visibility)
 
-• `Optional` **ry**: `number`
+***
 
-___
+### viewBox?
 
-### r
+> `optional` **viewBox?**: `string`
 
-• `Optional` **r**: `number`
+***
 
-___
+### id?
 
-### transform
+> `optional` **id?**: `string`
 
-• `Optional` **transform**: `string`
+***
+
+### class?
+
+> `optional` **class?**: `string`
+
+***
+
+### x1?
+
+> `optional` **x1?**: `number`
+
+***
+
+### y1?
+
+> `optional` **y1?**: `number`
+
+***
+
+### x2?
+
+> `optional` **x2?**: `number`
+
+***
+
+### y2?
+
+> `optional` **y2?**: `number`
+
+***
+
+### x?
+
+> `optional` **x?**: `string`
+
+***
+
+### y?
+
+> `optional` **y?**: `string`
+
+***
+
+### width?
+
+> `optional` **width?**: `string`
+
+***
+
+### height?
+
+> `optional` **height?**: `string`
+
+***
+
+### points?
+
+> `optional` **points?**: `string`
+
+***
+
+### d?
+
+> `optional` **d?**: `string`
+
+***
+
+### cx?
+
+> `optional` **cx?**: `number`
+
+***
+
+### cy?
+
+> `optional` **cy?**: `number`
+
+***
+
+### rx?
+
+> `optional` **rx?**: `number`
+
+***
+
+### ry?
+
+> `optional` **ry?**: `number`
+
+***
+
+### r?
+
+> `optional` **r?**: `number`
+
+***
+
+### transform?
+
+> `optional` **transform?**: `string`
+
+***
+
+### clip-path?
+
+> `optional` **clip-path?**: `string`
+
+***
+
+### mask?
+
+> `optional` **mask?**: `string`
+
+***
+
+### filter?
+
+> `optional` **filter?**: `string`
+
+***
+
+### style?
+
+> `optional` **style?**: `string`

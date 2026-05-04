@@ -1,2 +1,3 @@
 export * from './FlatSVG';
-export * from './types';
+export * from './types-public';
+export * from './constants-public';

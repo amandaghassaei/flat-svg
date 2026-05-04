@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test *)",
+      "Bash(npx tsc *)",
+      "Bash(awk 'NR>=540 && NR<=625 && /child\\\\.|child,/{print NR\": \"$0}' /Users/amandaghassaei/Projects/origami/flat-svg/src/FlatSVG.ts)"
+    ]
+  }
+}
