@@ -324,10 +324,35 @@ function _convertPointsToPath(
         }
     }
     if (elementType === SVG_POLYGON) {
-        // Explicit L back to the first point so N points → N edges (rather
-        // than N-1 + an implicit Z-closure). Trailing Z is dropped as
-        // close-to-self by FlatSVG's z-to-self heuristic.
-        d += ` L${firstX},${firstY} Z`;
+        // Preserve the "N points → N edges" invariant in both cases:
+        //   1. Last ≠ first: append an explicit L back to the first point.
+        //      The implicit Z then closes a zero-length segment (dropped by
+        //      FlatSVG's z-to-self heuristic). N-1 user-visible L's + 1
+        //      explicit L back = N edges.
+        //   2. Last == first (Illustrator + possibly others emit <polygon>
+        //      points with the first point duplicated at the end as a
+        //      redundant-but-spec-legal self-closure): skip the explicit L
+        //      and let Z provide the closing edge implicitly. (N-1) user-
+        //      visible L's + 1 implicit Z-edge = N edges. Without this
+        //      branch we would emit N+1 edges with a zero-length one at
+        //      the join, which produces spurious zero-length-segment
+        //      warnings in downstream consumers for essentially every
+        //      Illustrator-exported SVG.
+        // Exact equality on untransformed source coords is correct: pairs[]
+        // values come straight from parseFloat() with no arithmetic in
+        // between, so identical source token strings produce bit-identical
+        // floats. Checking pre-transform also avoids float drift that the
+        // matrix multiply in applyTransform could introduce.
+        // (Polyline branch is unchanged — polylines don't auto-close, so a
+        // duplicate end point on a <polyline> remains a real zero-length
+        // edge by design.)
+        const last = pairs[pairs.length - 1];
+        const first = pairs[0];
+        if (last[0] !== first[0] || last[1] !== first[1]) {
+            d += ` L${firstX},${firstY} Z`;
+        } else {
+            d += ' Z';
+        }
     }
     return d;
 }

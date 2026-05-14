@@ -306,6 +306,44 @@ describe('Path Conversions', () => {
             expect(convertPolygonToPath({ points: '3.4, 2, -3.5, 4, 0, 0' }, warnings)).to.equal(expected);
             expect(warnings.length).to.equal(0);
         });
+
+        it('drops the redundant explicit closing L when the input already self-closes (Illustrator-style)', () => {
+            // Illustrator and possibly others emit <polygon> with the
+            // first point duplicated as the last point. The duplicate is
+            // already iterated through the points loop (producing a single
+            // L back to start). The bug previously was the post-loop block
+            // unconditionally appending a SECOND explicit L back, which
+            // created a zero-length edge at the join (L0,0 L0,0).
+            // Post-fix, both this self-closing form and the equivalent
+            // 4-point non-self-closing form produce the same d-string.
+            const expected = 'M0,0 L10,0 L10,10 L0,10 L0,0 Z';
+            expect(
+                convertPolygonToPath({ points: '0,0 10,0 10,10 0,10 0,0' }, warnings)
+            ).to.equal(expected);
+            expect(warnings.length).to.equal(0);
+
+            // Equivalent shape without the duplicated end point — the
+            // post-loop block adds the explicit L back here since
+            // last != first. Identical output to the Illustrator form.
+            expect(
+                convertPolygonToPath({ points: '0,0 10,0 10,10 0,10' }, warnings)
+            ).to.equal(expected);
+            expect(warnings.length).to.equal(0);
+
+            // Transform path: equality check runs on untransformed source
+            // coords (before applyTransform's matrix multiply could
+            // introduce drift), so an Illustrator-style polygon with a
+            // transform also drops the redundant explicit L back.
+            const expectedTransformed = 'M20,-50 L30,-50 L30,-40 L20,-40 L20,-50 Z';
+            expect(
+                convertPolygonToPath({ points: '0,0 10,0 10,10 0,10 0,0' }, warnings, transform)
+            ).to.equal(expectedTransformed);
+            expect(warnings.length).to.equal(0);
+            expect(
+                convertPolygonToPath({ points: '0,0 10,0 10,10 0,10' }, warnings, transform)
+            ).to.equal(expectedTransformed);
+            expect(warnings.length).to.equal(0);
+        });
     });
 
     describe('convertPolylineToPath()', () => {
